@@ -6,15 +6,15 @@ services:
     #build: .
     command: bash -c "sleep 5; node /sapporo/bundle/main.js"
     environment:
-      MONGO_URL: mongodb://root:example@database:27017
+      MONGO_URL: mongodb://root:example@localhost:27017
       PORT: 80
       ROOT_URL: http://localhost
     ports:
       - "3000:80"
-    links:
-      - database
+    network_mode: "host"
   database:
     image: mongo
+    network_mode: "host"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
