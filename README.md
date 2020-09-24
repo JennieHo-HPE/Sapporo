@@ -25,6 +25,26 @@ meteor
   3. Pull docker images for all languages
   4. Configure IP and port of docker host
 
+## How to install docker and docker-compose on AWS Linux
+
+```
+sudo yum install -y docker
+sudo service docker start
+# Add yourself to docker group, so sudo is not required
+sudo usermod -a -G docker ec2-user
+# Make it autostart
+sudo chkconfig docker on
+
+# Useful  tools
+sudo yum install -y git tmux
+
+# Download docker-compose
+sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Then log out and in again
+```
+
 # Language configuration
 - Python 2
   - docker image: python:2
