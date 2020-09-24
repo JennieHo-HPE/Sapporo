@@ -47,43 +47,43 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 # Language configuration
 - Python 2
-  - docker image: python:2
-  - Executable: timeout 10 python2
-  - File Name: test.py
-  - Args2: <
-  - Test Input File: input
-  - STD input for test: sss
-  - Testing script: print("This is Python2")
+  - docker image: `python:2`
+  - Executable: `timeout 10 python2`
+  - File Name: `test.py`
+  - Args2: `<`
+  - Test Input File: `input`
+  - STD input for test: `sss`
+  - Testing script: `print("This is Python2")`
 - Python 3
-  - docker image: python:3
-  - Executable: timeout 10 python3
-  - File Name: test.py
-  - Args2: <
-  - Test Input File: input
-  - STD input for test: sss
-  - Testing script: print("This is Python3")
+  - docker image: `python:3`
+  - Executable: `timeout 10 python3`
+  - File Name: `test.py`
+  - Args2: `<`
+  - Test Input File: `input`
+  - STD input for test: `sss`
+  - Testing script: `print("This is Python3")`
 - Java
-  - docker image: azul/zulu-openjdk:8
-  - Executable: javac
-  - File Name: codewars.java
-  - Args2: > /dev/null 2>&1 && cd /; timeout 10 java codewars <
-  - Test Input File: input
-  - STD input for test: sss
-  - Testing script: class codewars { public static void main(String[] args) { System.out.println("This is Java"); } }
+  - docker image: `azul/zulu-openjdk:8`
+  - Executable: `javac`
+  - File Name: `codewars.java`
+  - Args2: `> /dev/null 2>&1 && cd /; timeout 10 java codewars <`
+  - Test Input File: `input`
+  - STD input for test: `sss`
+  - Testing script: `class codewars { public static void main(String[] args) { System.out.println("This is Java"); } }`
 - C++
-  - docker image: gcc:10.2.0
-  - Executable: javac
-  - File Name: codewars.java
-  - Args2: > /dev/null 2>&1 && cd /; timeout 10 java codewars <
-  - Test Input File: input
-  - STD input for test: sss
-  - Testing script: #include<stdio.h> int main() { printf("This is C++\n"); return 0; }
+  - docker image: `gcc:10.2.0`
+  - Executable: `javac`
+  - File Name: `codewars.java`
+  - Args2: `> /dev/null 2>&1 && cd /; timeout 10 java codewars <`
+  - Test Input File: `input`
+  - STD input for test: `sss`
+  - Testing script: `#include<stdio.h> int main() { printf("This is C++\n"); return 0; }`
 - C
-  - docker image: gcc:10.2.0
-  - Executable: g++
-  - Args1: -o output -std=c++11 -O2
-  - File Name: test.c
-  - Args2: && timeout 10 ./output <
-  - Test Input File: input
-  - STD input for test: sss
-  - Testing script: #include<stdio.h> int main() { printf("This is C\n"); return 0; }
+  - docker image: `gcc:10.2.0`
+  - Executable: `g++`
+  - Args1: `-o output -std=c++11 -O2`
+  - File Name: `test.c`
+  - Args2: `&& timeout 10 ./output <`
+  - Test Input File: `input`
+  - STD input for test: `sss`
+  - Testing script: `#include<stdio.h> int main() { printf("This is C\n"); return 0; }`
