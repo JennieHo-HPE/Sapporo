@@ -1,24 +1,69 @@
 # Sapporo <img src="https://travis-ci.org/catsass19/Sapporo.svg?branch=master"/> [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b7b87100ff544c75a9b95cdda192d089)](https://www.codacy.com/app/catsass19/Sapporo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=catsass19/Sapporo&amp;utm_campaign=Badge_Grade)
 Sapporo is a web app for hosting online coding competition
 
-#####How to run
+##### How to run
 It's based on Meteor.js. So just run it like other Meteor projects
 ```
 meteor npm install
 meteor
 ```
 
-#####Use docker image
-Docker image is also available
-```
-docker pull sapporo/sapporo:latest
-```
-Command to run in docker. Please be aware that there are three mandatory EVs to be configured <br>
-More detail please read /sapporo/bundle/README (in the container)
-```
-docker run -d -p 3000:80 \
--e MONGO_URL=mongodb://<user>:<password>@<mongourl>:<port>/<db> \
--e ROOT_URL=<your root url> \
--e PORT=80 \
-sapporo/sapporo /bin/bash -c "node /sapporo/bundle/main.js"
-```
+# Set up
+1. Start mongo and sapporo container with `docker-compose up`
+3. Open webpage and create admin account with `admin:awesomecodewar`
+4. Set up docker connection and languages
+  1. If your docker daemon only listens on a unix socket, socat it:
+     - `socat TCP-LISTEN:2376,reuseaddr,fork UNIX-CONNECT:/var/run/docker.sock`
+  2. Enter `172.17.0.1:2376` as docker connection
+  3. Click on the configuration to validate that we can connect to the daemon
+  4. Add languages (see below for configuration)
+  5. Run `docker pull python:3` for each container (replace container name)
+  6. Test language support
+5. Add other hosts
+  1. Run socat
+  2. Allow inbound traffic on port 2376 for security group of docker host by security group of sapporo host
+  3. Pull docker images for all languages
+  4. Configure IP and port of docker host
+
+# Language configuration
+- Python 2
+  - docker image: python:2
+  - Executable: timeout 10 python2
+  - File Name: test.py
+  - Args2: <
+  - Test Input File: input
+  - STD input for test: sss
+  - Testing script: print("This is Python2")
+- Python 3
+  - docker image: python:3
+  - Executable: timeout 10 python3
+  - File Name: test.py
+  - Args2: <
+  - Test Input File: input
+  - STD input for test: sss
+  - Testing script: print("This is Python3")
+- Java
+  - docker image: azul/zulu-openjdk:8
+  - Executable: javac
+  - File Name: codewars.java
+  - Args2: > /dev/null 2>&1 && cd /; timeout 10 java codewars <
+  - Test Input File: input
+  - STD input for test: sss
+  - Testing script: class codewars { public static void main(String[] args) { System.out.println("This is Java"); } }
+- C++
+  - docker image: gcc:10.2.0
+  - Executable: javac
+  - File Name: codewars.java
+  - Args2: > /dev/null 2>&1 && cd /; timeout 10 java codewars <
+  - Test Input File: input
+  - STD input for test: sss
+  - Testing script: #include<stdio.h> int main() { printf("This is C++\n"); return 0; }
+- C
+  - docker image: gcc:10.2.0
+  - Executable: g++
+  - Args1: -o output -std=c++11 -O2
+  - File Name: test.c
+  - Args2: && timeout 10 ./output <
+  - Test Input File: input
+  - STD input for test: sss
+  - Testing script: #include<stdio.h> int main() { printf("This is C\n"); return 0; }
