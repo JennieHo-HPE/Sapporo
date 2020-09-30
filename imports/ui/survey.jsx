@@ -187,14 +187,14 @@ class Survey extends Component {
 
             for(var i in surveyQuestions) {
               if (surveyQuestions[i].value === null) {
-                alert("CodeWars 小天使提示 - 部分問題似乎漏掉回答了 \n");
+                alert("CodeWars 小天使提示 - 部分問題似乎漏掉回答了 - Please answer all questions.\n");
                 return;
               }
             }
 
             for(var i in surveyOtherQuestions) {
               if (surveyOtherQuestions[i].value === null) {
-                alert("CodeWars 小天使提示 - 部分問題似乎漏掉回答了 \n");
+                alert("CodeWars 小天使提示 - 部分問題似乎漏掉回答了 - Please answer all questions.\n");
                 return;
               }
             }
@@ -299,7 +299,8 @@ class Survey extends Component {
                         </div>
                     ) : (
                         <div>
-                            問卷將在比賽結束後開放...
+                            問卷將在比賽結束後開放...<br/>
+                            The questionnaire will be opened after the competition...
                         </div>
                     )
                 }
