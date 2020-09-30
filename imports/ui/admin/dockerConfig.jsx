@@ -303,7 +303,7 @@ class DockerConfig extends Component {
                     </Dialog>
                 :''
                 }
-                <Dialog title="Runnung Test..." modal={false} open={this.state.runningTest} >
+                <Dialog title="Running Test..." modal={false} open={this.state.runningTest} >
                     <LinearProgress />
                 </Dialog>
             </div>

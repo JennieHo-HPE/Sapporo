@@ -296,7 +296,7 @@ class ProblemConfig extends Component {
                                    value={selected.testOutput} onChange={this.updateSelected.bind(this, 'testOutput')} rows={1} rowsMax={1}/>
                     </div>
                     <div style={workaroundStyle}>
-                        <RaisedButton label="Add Verifycation" primary={true} onTouchTap={this.addVerificationCase.bind(this)}/>
+                        <RaisedButton label="Add another verification" primary={true} onTouchTap={this.addVerificationCase.bind(this)}/>
                         {this.renderVerification()}
                     </div>
                     <div style={{marginTop:'10px'}}>
