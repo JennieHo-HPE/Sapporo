@@ -126,6 +126,8 @@ class ProblemConfig extends Component {
             description: {},
             exampleInput: {},
             exampleOutput: {},
+            testInput: "",
+            testOutput: "",
             score: this.state.addScore,
             verfication: [],
             images: []

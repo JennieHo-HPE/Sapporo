@@ -122,16 +122,17 @@ sudo chmod +x /usr/local/bin/docker-compose
   - Testing script: `class codewars { public static void main(String[] args) { System.out.println("This is Java"); } }`
 - C++
   - docker image: `gcc:10.2.0`
-  - Executable: `javac`
-  - File Name: `codewars.java`
-  - Args2: `> /dev/null 2>&1 && cd /; timeout 10 java codewars <`
+  - Executable: `g++`
+  - File Name: `test.cpp`
+  - Args1: `-o output -std=c++11 -O2`
+  - Args2: `&& timeout 10 ./output <`
   - Test Input File: `input`
   - STD input for test: `sss`
-  - Testing script: `#include<stdio.h> int main() { printf("This is C++\n"); return 0; }`
+  - Testing script: `#include <iostream> int main() { std::cout << "This is C++\n"; return 0; }`
 - C
   - docker image: `gcc:10.2.0`
-  - Executable: `g++`
-  - Args1: `-o output -std=c++11 -O2`
+  - Executable: `gcc`
+  - Args1: `-o output -O2`
   - File Name: `test.c`
   - Args2: `&& timeout 10 ./output <`
   - Test Input File: `input`
