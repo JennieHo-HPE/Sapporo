@@ -1,4 +1,7 @@
-# Sapporo <img src="https://travis-ci.org/catsass19/Sapporo.svg?branch=master"/> [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b7b87100ff544c75a9b95cdda192d089)](https://www.codacy.com/app/catsass19/Sapporo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=catsass19/Sapporo&amp;utm_campaign=Badge_Grade)
+# Sapporo
+<img src="https://travis-ci.org/catsass19/Sapporo.svg?branch=master"/>
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b7b87100ff544c75a9b95cdda192d089)](https://www.codacy.com/app/catsass19/Sapporo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=catsass19/Sapporo&amp;utm_campaign=Badge_Grade)
+
 Sapporo is a web app for hosting online coding competition
 
 ##### How to run
@@ -7,6 +10,53 @@ It's based on Meteor.js. So just run it like other Meteor projects
 meteor npm install
 meteor
 ```
+
+# Features
+- Dashboard: Overview over current competition status for students
+- Inbox
+  - View messages from admin
+- Survey
+  * After competition is over, teams can submit a survey response
+  * Admin can search individual teams and see their answers
+  * TODO: How to aggregate the results?
+  * TODO: Maybe move to some 3rd party survey system (says Tony)
+- About page
+  * Info page showing which technologies CodeWars 2.0 is built with
+- Login/Logout
+- Admin
+  - System Settings
+    * Set project name
+    * Set start and end time of the competition
+    * Probably broken SSO login via Facebook and HPE Passport
+    * Allow accout creation. Only useful for in-person competition
+    * Set maximum number of parallel executions
+    * TODO: What is submission interval?
+    * TODO: What is timeout?
+  - Problem Configuration
+    * Configure problem languages
+    * Configure problems
+  - Docker Settings
+    * Configure docker daemons
+    * Configure how languages are compiled with containers
+  - Data Statistics
+    * Which problems solved how often
+    * Ranking of students
+  - Server Monitor
+    * TODO: What does it show?
+  - Send Mail
+    * Send a message to every student
+  - Manage Users
+    * Allows to batch create users
+    * TODO: Implement import from registration
+  - Performance Test
+    * Sends compilations to daemon and measures time
+- Problems (has score)
+  * See problems with description
+  * See pictures
+  * See Example stdin and stdout
+  * Enter code
+  * Test with test input
+  * Submit code: (First test and submit when successful)
 
 # Set up
 1. Start mongo and sapporo container with `docker-compose up`
