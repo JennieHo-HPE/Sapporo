@@ -37,22 +37,35 @@ const questionSelection = [{
 
 const surveyForm = {
     questions:[{
-        description: ['會場方向指引清楚明瞭', 'Directions to the the venue was clear'],
-        value: null
-    }, {
+    // TODO: Reenable questions about venue for in-person event
+    //    description: ['會場方向指引清楚明瞭', 'Directions to the the venue was clear'],
+    //    value: null
+    //}, {
+    //    description: ['比賽場地 (交通便利,場地大小, 照明.. )', 'Venue was well-chosen for the event (ease of transportation, venue size, lighting)'],
+    //    value: null
+    //}, {
+    //    description: ['餐點安排', 'Food and beverage arrangements were satisfactory'],
+    //    value: null
+    //}, {
         description: ['比賽流程及規則說明清楚詳細', 'Explanation for competition rules and SOP were detailed and clear'],
         value: null
     }, {
         description: ['比賽過程中有疑問或需要協助時,工作人員能及時予以協助', 'During the competition, assistance was received in a timely manner'],
         value: null
     }, {
+        description: ['在遠端競賽中，YouTube直播清楚傳達訊息', 'The YouTube live stream explained everything clearly during the virtual competition'],
+        value: null
+    }, {
         description: ['活動時間安排適宜', 'Scheduling for the event was appropriate'],
         value: null
     }, {
-        description: ['比賽場地 (交通便利,場地大小, 照明.. )', 'Venue was well-chosen for the event (ease of transportation, venue size, lighting)'],
+        description: ['線上系統操作容易', 'The CodeWars online system was easy to use'],
         value: null
     }, {
-        description: ['餐點安排', 'Food and beverage arrangements were satisfactory'],
+        description: ['報名流程簡單易懂' , 'The registration process was easy'],
+        value: null
+    }, {
+        description: ['我對比賽要求開發程式語言的選擇感到滿意', 'I\'m happy with the selection of programming languages'],
         value: null
     }, {
         description: ['我覺得試題整體來說難易適中', 'In general, difficulty of the problems were reasonable'],
