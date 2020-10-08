@@ -1,5 +1,13 @@
 version: '2.0'
 services:
+  reverse-proxy:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./runtime/nginx.conf:/etc/nginx/nginx.conf
+      - ./runtime/certs:/certs
   sapporo:
     image: sapporo/sapporo:latest
     # Or this to build the local Dockerfile

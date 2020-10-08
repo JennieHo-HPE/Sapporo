@@ -59,7 +59,8 @@ meteor
   * Submit code: (First test and submit when successful)
 
 # Set up
-1. Start mongo and sapporo container with `docker-compose up`
+0. Acquire certificate and put them in `runtime/{cert,privkey}.pem`
+1. Start all containers `docker-compose up`
 3. Open webpage and create admin account with `admin:awesomecodewar`
 4. Set up docker connection and languages
   1. If your docker daemon only listens on a unix socket, socat it:
