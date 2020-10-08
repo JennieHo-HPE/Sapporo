@@ -139,3 +139,19 @@ sudo chmod +x /usr/local/bin/docker-compose
   - Test Input File: `input`
   - STD input for test: `sss`
   - Testing script: `#include<stdio.h> int main() { printf("This is C\n"); return 0; }`
+- Rust
+  - Docker image: `rust:1.46`
+  - Executable: `rustc`
+  - File Name: `test.rs`
+  - Args2: `&& timeout 10 ./test <`
+  - Test Input File: `input`
+  - STD input for test: `sss`
+  - Testing script: `use std::io::{self, BufRead}; fn main() { let mut line = String::new(); io::stdin().lock().read_line(&mut line).expect("Could not read line"); println!("Hello from Rust! {}", line) }`
+- Golang
+  - Docker image: `golang:1.15`
+  - Executable: `timeout 10 go run`
+  - File Name: `test.go`
+  - Args2: `<`
+  - Test Input File: `input`
+  - STD input for test: `sss`
+  - Testing script: `package main; import ("bufio"; "fmt"; "os"); func main() { reader := bufio.NewReader(os.Stdin); text, _ := reader.ReadString('\n'); fmt.Println("Hello from Go. ", text); }`
