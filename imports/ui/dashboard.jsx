@@ -121,15 +121,9 @@ class Dashboard extends Component {
         let currentUser = getCurrentUserData(Meteor.user()._id, this.props._userData);
         let defaultLang = currentUser.language || (this.props._language[0]? this.props._language[0].iso : null);
 
-        if (defaultLang) {
-            return function () {
-                let protocol = window.location.protocol;
-                let hostname = window.location.hostname;
-                window.open(protocol + '//' + hostname + ':8888/' + defaultLang + '/userGuide.pdf', 'popUpWindow');
-            };
-        }
-
-        return function () {};
+        return function () {
+            window.open('https://hpcodewars.com.tw/user-guides', 'popUpWindow');
+        };
     }
     getContent (tile) {
         let contentStyle = {
