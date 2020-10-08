@@ -1,29 +1,29 @@
-#
-# This is for Travis CI.
-# - Every github commit triggers Travis CI to build a Docker image
-# - For more information please visit:
-#       https://travis-ci.org
-#
-
 sudo: required
-language: node_js
-node_js:
-  - "5.0"
-before_install:
-  - curl https://install.meteor.com/ | sh
 services:
   - docker
+
 env:
-  #- LAIKA_OPTIONS="-t 5000"
-after_success:
-  -  meteor build ./
-  -  ls ./
-  -  docker --version
-  -  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  #-  docker pull node:0.10
-  -  docker build -t sapporo/sapporo:0.$TRAVIS_BUILD_NUMBER .
-  -  docker build -t sapporo/sapporo:latest .
+  global:
+    - IMAGE_NAME=sapporo/sapporo
+
+before_script:
+  - version="$(awk '$2 == "SAPPORO_VERSION" { print $3; exit }' Dockerfile)"
+  #- docker pull "$IMAGE_NAME" || true
+
+script:
+  #- docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
+  - docker build --tag "$IMAGE_NAME" .
+
+after_script:
   -  docker images
-  -  docker run sapporo/sapporo:latest node /sapporo/bundle/main.js #If it's valid, it should throw the error of missing MongoDB URL
-  -  docker push sapporo/sapporo:0.$TRAVIS_BUILD_NUMBER
-  -  docker push sapporo/sapporo:latest
+  -  docker run "$IMAGE_NAME" node /sapporo/bundle/main.js # If it's valid, it should throw the error of missing MongoDB URL
+
+#before_deploy:
+#  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+#  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
+#  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
+#deploy:
+#  provider: script
+#  script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}"
+#  on:
+#    branch: master

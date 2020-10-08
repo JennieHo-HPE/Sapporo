@@ -1,5 +1,6 @@
 FROM node:5.0
 MAINTAINER Daniel Schaefer <daniel.schaefer@hpe.com>
+ENV SAPPORO_VERSION 0.1.0
 
 # Install old version of MeteorJS
 ENV METEOR_ALLOW_SUPERUSER=1
