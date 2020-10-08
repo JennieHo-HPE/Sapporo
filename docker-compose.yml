@@ -6,15 +6,29 @@ services:
     #build: .
     command: bash -c "sleep 5; node /sapporo/bundle/main.js"
     environment:
-      MONGO_URL: mongodb://root:example@localhost:27017
-      PORT: 80
-      ROOT_URL: http://localhost
+      MONGO_URL: mongodb://root:example@database:27017
+      PORT: 3000
+      ROOT_URL: https://competition.hpcodewars.com.tw
+    # For local development
     ports:
-      - "3000:80"
-    network_mode: "host"
+      - "3000:3000"
+  # Second sapporo container with same database
+  # Because the monitoring uses lots of websocket connections that would block
+  # other requests on high load.
+  sapporo-monitoring:
+    image: sapporo/sapporo:latest
+    # Or this to build the local Dockerfile
+    #build: .
+    command: bash -c "sleep 5; node /sapporo/bundle/main.js"
+    environment:
+      MONGO_URL: mongodb://root:example@database:27017
+      PORT: 3000
+      ROOT_URL: https://monitoring.hpcodewars.com.tw
+    # For local development
+    ports:
+      - "3001:3000"
   database:
     image: mongo
-    network_mode: "host"
     volumes:
       - ./runtime/mongodb:/data/db
     environment:
