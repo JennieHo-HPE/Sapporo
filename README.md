@@ -59,19 +59,20 @@ meteor
   * Submit code: (First test and submit when successful)
 
 # Set up
-0. Acquire certificate and put them in `runtime/{cert,privkey}.pem`
-1. Start all containers `docker-compose up`
-3. Open webpage and create admin account with `admin:awesomecodewar`
-4. Set up docker connection and languages
-  1. If your docker daemon only listens on a unix socket, socat it:
-     - `socat TCP-LISTEN:2376,reuseaddr,fork UNIX-CONNECT:/var/run/docker.sock`
+1. Acquire certificate and put them in `runtime/{cert,privkey}.pem`
+2. Adjust `example-nginx.conf` and copy to `runtime/nginx.conf`
+3. Start all containers `docker-compose up`
+4. Open webpage and create admin account with `admin:awesomecodewar`
+5. Set up docker connection and languages
+  1. Make docker listen on TCP
+      - Edit `/etc/sysconfig/docker` and add `-H tcp://0.0.0.0:2376` to `OPTIONS`
   2. Enter `172.17.0.1:2376` as docker connection
   3. Click on the configuration to validate that we can connect to the daemon
   4. Add languages (see below for configuration)
   5. Run `docker pull python:3` for each container (replace container name)
   6. Test language support
-5. Add other hosts
-  1. Run socat
+6. Add other hosts
+  1. Make sure the docker daemons listen on `tcp://0.0.0.0:2376`
   2. Allow inbound traffic on port 2376 for security group of docker host by security group of sapporo host
   3. Pull docker images for all languages
   4. Configure IP and port of docker host
