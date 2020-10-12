@@ -5,6 +5,10 @@ import { HTTP } from 'meteor/http'
 import {userData, batchAccount} from '../imports/api/db.js';
 
 function createAccount(username, password) {
+    if (username === 'admin') {
+        throw new Meteor.Error(503, 'Cannot batch create/update admin user');
+    }
+
     let createResult = Accounts.createUser({
         username: username,
         password: password
