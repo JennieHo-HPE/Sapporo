@@ -47,7 +47,7 @@ meteor
     * Send a message to every student
   - Manage Users
     * Allows to batch create users
-    * TODO: Implement import from registration
+    * Import users from registration
   - Performance Test
     * Sends compilations to daemon and measures time
 - Problems (has score)
@@ -97,7 +97,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 # Then log out and in again
 ```
 
-# Language configuration
+## Language configuration
 - Python 2
   - docker image: `python:2`
   - Executable: `timeout 10 python2`
@@ -164,3 +164,7 @@ sudo chmod +x /usr/local/bin/docker-compose
   - Test Input File: `input`
   - STD input for test: `sss`
   - Testing script: `print("Hello World")`
+
+## Import from registration
+Provide the URL, e.g. `https://hpcodewars.com.tw/registrations/sapporo` and the
+`sapporo_secret` specified in the registration's configuration file.

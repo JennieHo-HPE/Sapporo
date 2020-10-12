@@ -1,8 +1,37 @@
 import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+import { HTTP } from 'meteor/http'
 import {userData, batchAccount} from '../imports/api/db.js';
 
+function createAccount(username, password) {
+    let createResult = Accounts.createUser({
+        username: username,
+        password: password
+    });
+    if (!createResult) {
+        throw new Meteor.Error(503, 'Unable to create account');
+    } else {
+        let findUser = batchAccount.findOne({username: username});
+        if (!findUser) {
+            batchAccount.insert({
+                username: username,
+                password: password,
+                userID: createResult
+            });
+        } else {
+            batchAccount.update({
+                username: username
+            }, {
+                $set : {
+                    username: username,
+                    password: password,
+                    userID: createResult
+                }
+            });
+        }
+    }
+}
 
 Meteor.startup(() => {
     Meteor.methods({
@@ -15,38 +44,32 @@ Meteor.startup(() => {
                 });
             }
         },
+        'user.importAccounts'(importUrl, sapporoSecret) {
+            if (Meteor.user().username !== 'admin') return false;
+
+            try {
+                const result = HTTP.call('GET', importUrl, {
+                    params: { admin: sapporoSecret }
+                });
+
+                const accounts = result.data;
+                for (const account of accounts) {
+                  createAccount(account['username'], account['password']);
+                }
+            } catch (e) {
+                throw new Meteor.Error(503, 'Failed to query registration: ' + e.message);
+            }
+            return true;
+        },
         'user.batchCreate'(username, password) {
             if (Meteor.user().username !== 'admin') return false;
-            let createResult = Accounts.createUser({
-                username: username,
-                password: password
-            });
-            if (!createResult) {
-                throw new Meteor.Error(503, 'Unable to create account');
-            } else {
-                let findUser = batchAccount.findOne({username: username});
-                if (!findUser) {
-                    batchAccount.insert({
-                        username: username,
-                        password: password,
-                        userID: createResult
-                    });
-                } else {
-                    batchAccount.update({
-                        username: username
-                    }, {
-                        $set : {
-                            username: username,
-                            password: password,
-                            userID: createResult
-                        }
-                    });
-                }
-            }
+
+            createAccount(username, password);
             return true;
         },
         'user.removeAll'() {
             if (Meteor.user().username !== 'admin') return false;
+
             userData.remove({});
             batchAccount.remove({});
             Meteor.users.remove({

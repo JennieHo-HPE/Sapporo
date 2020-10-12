@@ -15,13 +15,32 @@ class BatchAccount extends Component {
         super(props);
         this.state = {
             batchTotal: 0,
-            accountPrefix: 'team'
+            accountPrefix: 'team',
+            importUrl: '',
+            sapporoSecret: ''
         };
     }
     updateBatchData (field, event) {
         let state = this.state;
         state[field] = event.target.value;
         this.setState(state);
+    }
+    importAccounts() {
+        if (!this.state.importUrl || this.state.importUrl == '') {
+            alert('Import URL cannot be empty');
+            return;
+        }
+        if (!this.state.sapporoSecret || this.state.sapporoSecret == '') {
+            alert('Sapporo secret cannot be empty');
+            return;
+        }
+        Meteor.call('user.importAccounts', this.state.importUrl, this.state.sapporoSecret, function (err) {
+            if (err) {
+                alert('Importing users failed: ' + err.reason);
+            } else {
+                alert('Imported all users!');
+            }
+        });
     }
     batchCreate () {
         for (var key =0; key < this.state.batchTotal; key++) {
@@ -51,6 +70,7 @@ class BatchAccount extends Component {
         return (
             <div>
                 <div>
+                    <h5>Create a batch of accounts</h5>
                     <TextField type="text" id="accountName" floatingLabelText="Account Prefix"
                                value={this.state.accountPrefix} onChange={this.updateBatchData.bind(this, 'accountPrefix')}/>
                     <TextField type="number" min="0" floatingLabelText="Total"
@@ -58,13 +78,21 @@ class BatchAccount extends Component {
                     <RaisedButton label="Create" primary={true} onTouchTap={this.batchCreate.bind(this)}/>
                 </div>
                 <div>
+                    <h5>Import a batch of accounts from registration</h5>
+                    <TextField type="text" id="importUrl" floatingLabelText="Import URL"
+                               onChange={this.updateBatchData.bind(this, 'importUrl')}/>
+                    <TextField type="text" id="sapporoSecret" floatingLabelText="Sapporo secret"
+                               onChange={this.updateBatchData.bind(this, 'sapporoSecret')}/>
+                    <RaisedButton label="Import" primary={true} onTouchTap={this.importAccounts.bind(this)}/>
+                </div>
+                <div>
+                    <RaisedButton label="Remove All User Data" secondary={true} onTouchTap={this.removeAll.bind(this)}/>
+                </div>
+                <div>
                     <h5>Batch created accounts</h5>
                     <List>
                         {this.renderBatchAccounts()}
                     </List>
-                </div>
-                <div>
-                    <RaisedButton label="Remove All User Data" secondary={true} onTouchTap={this.removeAll.bind(this)}/>
                 </div>
             </div>
         );
