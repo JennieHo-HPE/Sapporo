@@ -95,27 +95,6 @@ class Login extends Component {
             }
         });
     }
-    loginOauth () {
-        Meteor.loginWithMeteorOAuth2Server({}, (err) => {
-            if (err) {
-                this.renderErrMsg(err);
-            } else {
-                this.checkUser();
-            }
-        });
-    }
-    removeOauth () {
-        Meteor.call('resetServiceConfiguration');
-    }
-    loginFacebook () {
-        Meteor.loginWithFacebook({}, (err) => {
-            if (err) {
-                this.renderErrMsg(err);
-            } else {
-                this.checkUser();
-            }
-        });
-    }
     componentDidUpdate() {
         if (Meteor.user()) {
             console.log('go dashboard');
@@ -123,9 +102,6 @@ class Login extends Component {
         }
     }
     render () {
-        // Hide following login method for now
-        //<RaisedButton style={loginButton} label="CodeWars Passport" primary={true} onTouchTap={this.loginOauth.bind(this)}/>
-        //<RaisedButton style={loginButton} label="Facebook"          secondary={true} onTouchTap={this.loginFacebook.bind(this)}/>
         return (
             <div>
                 <div style={mainImageStyle}>
