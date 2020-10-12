@@ -9,7 +9,7 @@ services:
       - ./runtime/nginx.conf:/etc/nginx/nginx.conf
       - ./runtime/certs:/certs
   sapporo:
-    image: sapporo/sapporo:latest
+    image: johnazoidberg/sapporo:latest
     # Or this to build the local Dockerfile
     #build: .
     command: bash -c "sleep 5; node /sapporo/bundle/main.js"
@@ -24,7 +24,7 @@ services:
   # Because the monitoring uses lots of websocket connections that would block
   # other requests on high load.
   sapporo-monitoring:
-    image: sapporo/sapporo:latest
+    image: johnazoidberg/sapporo:latest
     # Or this to build the local Dockerfile
     #build: .
     command: bash -c "sleep 5; node /sapporo/bundle/main.js"
