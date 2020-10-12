@@ -155,3 +155,11 @@ sudo chmod +x /usr/local/bin/docker-compose
   - Test Input File: `input`
   - STD input for test: `sss`
   - Testing script: `package main; import ("bufio"; "fmt"; "os"); func main() { reader := bufio.NewReader(os.Stdin); text, _ := reader.ReadString('\n'); fmt.Println("Hello from Go. ", text); }`
+- Swift
+  - Docker image: `swift:5.3`
+  - Executable: `swiftc`
+  - Filename: `test.swift`
+  - Args2: `&& timeout 10 ./test <`
+  - Test Input File: `input`
+  - STD input for test: `sss`
+  - Testing script: `print("Hello World")`
