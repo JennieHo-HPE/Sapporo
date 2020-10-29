@@ -59,6 +59,123 @@ class DockerConfig extends Component {
             }
         });
     }
+    addDefaultLanguages () {
+        const defaultLanguages = [
+            {
+                langType: 'python',
+                title: 'Python 2',
+                image: 'python:2',
+                mountPath: '/usr/src/myapp/',
+                executable: 'timeout 10 python2',
+                preArg: '',
+                file: 'test.py',
+                middleArg: '<',
+                testInputFile: 'input',
+                postArg: '',
+                testInput: 'sss',
+                // TODO: Add actual example that prints the input
+                helloworld: 'print "This is Python2"'
+            },
+            {
+                langType: 'python',
+                title: 'Python 3',
+                image: 'python:3',
+                mountPath: '/usr/src/myapp/',
+                executable: 'timeout 10 python3',
+                preArg: '',
+                file: 'test.py',
+                middleArg: '<',
+                testInputFile: 'input',
+                postArg: '',
+                testInput: 'sss',
+                // TODO: Add actual example that prints the input
+                helloworld: 'print("This is Python3")'
+            },
+            {
+                langType: 'java',
+                title: 'Java 8',
+                image: 'azul/zulu-openjdk:8',
+                mountPath: '/usr/src/myapp/',
+                executable: 'javac',
+                preArg: '',
+                file: 'codewars.java',
+                middleArg: '> /dev/null 2>&1 && cd /; timeout 10 java codewars <',
+                testInputFile: 'input',
+                postArg: '',
+                testInput: 'sss',
+                // TODO: Add actual example that prints the input
+                helloworld: 'class codewars { public static void main(String[] args) { System.out.println("This is Java"); } }'
+            },
+            {
+                langType: 'c_cpp',
+                title: 'C',
+                image: 'gcc:10.2.0',
+                mountPath: '/usr/src/myapp/',
+                executable: 'gcc',
+                preArg: '-o output -O2',
+                file: 'test.c',
+                middleArg: '&& timeout 10 ./output <',
+                testInputFile: 'input',
+                postArg: '',
+                testInput: 'sss',
+                // TODO: Add actual example that prints the input
+                helloworld: '#include<stdio.h>\nint main() { printf("This is C\\n"); return 0; }'
+            },
+            {
+                langType: 'c_cpp',
+                title: 'C++ 11',
+                image: 'gcc:10.2.0',
+                mountPath: '/usr/src/myapp/',
+                executable: 'g++',
+                preArg: '-o output -std=c++11 -O2',
+                file: 'test.cpp',
+                middleArg: '&& timeout 10 ./output <',
+                testInputFile: 'input',
+                postArg: '',
+                testInput: 'sss',
+                // TODO: Add actual example that prints the input
+                helloworld: '#include <iostream>\nint main() { std::cout << "This is C++\\n"; return 0; }'
+            },
+            {
+                langType: 'rust',
+                title: 'Rust 1.46',
+                image: 'rust:1.46',
+                mountPath: '/usr/src/myapp/',
+                executable: 'rustc',
+                preArg: '',
+                file: 'test.rs',
+                middleArg: '&& timeout 10 ./test <',
+                testInputFile: 'input',
+                postArg: '',
+                testInput: 'sss',
+                helloworld: 'use std::io::{self, BufRead}; fn main() { let mut line = String::new(); io::stdin().lock().read_line(&mut line).expect("Could not read line"); println!("Hello from Rust! {}", line) }'
+            },
+            {
+                langType: 'swift',
+                title: 'Swift 5.3',
+                image: 'swift:5.3',
+                mountPath: '/usr/src/myapp/',
+                executable: 'swiftc',
+                preArg: '',
+                file: 'test.swift',
+                middleArg: '&& timeout 10 ./test <',
+                testInputFile: 'input',
+                postArg: '',
+                testInput: 'sss',
+                // TODO: Add actual example that prints the input
+                helloworld: 'print("Hello World")'
+            }
+        ];
+
+        for (const language of defaultLanguages) {
+            language['languages'] = true;
+            Meteor.call('docker.add', language, (err) => {
+                if (err) {
+                    alert(err);
+                }
+            });
+        }
+    }
     updateLang () {
         let obj = this.state.selectLang;
         if (obj !== null) {
@@ -266,6 +383,7 @@ class DockerConfig extends Component {
                             <ToolbarTitle text="Language Configuration" />
                             <RaisedButton label="Add" onTouchTap={this.addLang.bind(this)}/>
                             <RaisedButton label="Test" secondary={true} onTouchTap={this.startTesting.bind(this)}/>
+                            <RaisedButton label="Add defaults" onTouchTap={this.addDefaultLanguages.bind(this)}/>
                         </ToolbarGroup >
                         <ToolbarGroup float="right">
 

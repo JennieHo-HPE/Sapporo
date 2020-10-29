@@ -25,9 +25,6 @@ COPY --from=0 /output/source.tar.gz /sapporo.tar.gz
 RUN mkdir /sapporo
 RUN cd /sapporo && tar xf /sapporo.tar.gz
 
-
-#RUN apt-get update
-#RUN apt-get -y install build-essential
 RUN cd /sapporo/bundle/programs/server && npm install
 
 CMD ["/usr/local/bin/node", "/sapporo/bundle/main.js"]
