@@ -151,6 +151,27 @@ class ProblemConfig extends Component {
         });
         this.setState(initState);
     }
+    addDefaultLanguages () {
+        const defaultLanguages = [
+            {
+                iso: 'en-US',
+                text: 'English'
+            },
+            {
+                iso: 'zh-TW',
+                text: 'Chinese'
+            },
+            {
+                iso: 'es',
+                text: 'Spanish'
+            }
+        ];
+        for (const language of defaultLanguages) {
+            Meteor.call('language.add', language);
+        }
+
+        this.setState(initState);
+    }
     removeLang (data) {
         Meteor.call('language.delete', data);
         this.setState(initState);
@@ -344,6 +365,7 @@ class ProblemConfig extends Component {
                     <TextField type="text" id="langText" placeholder="English" style={titleStyle}
                                value={this.state.addText} onChange={this.updateAddText.bind(this)}/>
                     <RaisedButton label="Add" primary={true} onTouchTap={this.addLang.bind(this)}/>
+                    <RaisedButton label="Add defaults" onTouchTap={this.addDefaultLanguages.bind(this)}/>
                 </div>
                 <List style={listStyle}>
                     {this.renderLangs()}
