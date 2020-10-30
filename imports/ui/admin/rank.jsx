@@ -69,6 +69,21 @@ class Rank extends Component {
             );
         });
     }
+    renderUserNumber () {
+        if (!this.props._userData || this.props._userData.length === 0) return;
+
+        const totalUsers = this.props._userData.length;
+        const finishedUsers = this.props._userData.filter(
+          user => getFinishTime(user) != null
+        ).length;
+        return (
+            <span>
+              <span title="Completed all problems">{ finishedUsers }</span>
+              /
+              <span title="Total users">{ totalUsers }</span>
+            </span>
+        );
+    }
     render () {
         return (
             <div>
@@ -77,7 +92,7 @@ class Rank extends Component {
                     {this.renderProblemAnswerRate()}
                 </List>
                 <Divider />
-                <h3>Ranking</h3>
+                <h3>Ranking ({this.renderUserNumber()})</h3>
                 <List>
                     {this.renderAllUser()}
                 </List>
