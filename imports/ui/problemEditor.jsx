@@ -41,7 +41,8 @@ class ProblemEditor extends Component {
             code: '',
             runCode: false,
             updateLock: true,
-            lastSubmitTime: null
+            lastSubmitTime: null,
+            languageOverride: null
         };
     }
     updateCode(code) {
@@ -71,6 +72,19 @@ class ProblemEditor extends Component {
                 });
             }
         }
+    }
+    updateDisplayLang(event, index, value) {
+        console.log(`LanguageOverride: ${value}`);
+        this.setState({
+            languageOverride: value,
+        });
+    }
+    renderDisplayLangOptions () {
+        console.log(this.props._language);
+        if (!this.props._language) return;
+        return this.props._language.map((lang, key) => (
+            <MenuItem key={key} value={lang.iso} primaryText={lang.text}></MenuItem>
+        ));
     }
     renderLangOptions () {
         if (!this.props._docker) return;
@@ -244,7 +258,7 @@ class ProblemEditor extends Component {
         const actions = [
             <FlatButton label="Exit" secondary={true} onTouchTap={this.closeDialog.bind(this)}/>
         ];
-        const langIso = currentUser.language || (this.props._language.length > 0 ? this.props._language[0].iso : null);
+        const langIso = this.state.languageOverride || currentUser.language || (this.props._language.length > 0 ? this.props._language[0].iso : null);
 
         if (!langIso) {
             return;
@@ -274,9 +288,14 @@ class ProblemEditor extends Component {
                 <div style={{display:'inline-block', width: '100%', padding:'10px 0'}} >
                     <Paper style={{width: '49.5%', float:'left'}} zDepth={1}>
                         <div style={textDiv}>
-                            <TextField  floatingLabelText="Title" type="text" style={{width: '80%'}}
+                            <TextField  floatingLabelText="Title" type="text" style={{width: '70%'}}
                                         value={this.props.data.title[langIso]}/>
-                            <TextField  floatingLabelText="Score" type="text" style={{width: '20%'}}
+                            <SelectField value={this.state.languageOverride}
+                                         onChange={this.updateDisplayLang.bind(this)}
+                                         floatingLabelText="Language" style={{width: '20%'}}>
+                                 {this.renderDisplayLangOptions()}
+                            </SelectField>
+                            <TextField  floatingLabelText="Score" type="text" style={{width: '5%'}}
                                         value={this.props.data.score}/>
                         </div>
                         <div style={textDiv}>
