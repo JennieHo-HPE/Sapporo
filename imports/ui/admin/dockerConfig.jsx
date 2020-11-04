@@ -247,9 +247,8 @@ class DockerConfig extends Component {
             if (err) {
                 alert(err);
             } else {
-                for (var key in result) {
-                    alert(result[key].title + ' : ' + result[key].output);
-                }
+                const resString = result.map(res => `${res.title}:\n${res.output}`).join('\n\n');
+                alert(`Test results:\n\n${resString}`);
             }
             this.setState({runningTest: false});
         });
@@ -327,33 +326,37 @@ class DockerConfig extends Component {
     }
     checkDockerMachine (machine) {
         Meteor.call('docker.info', machine, (err) => {
-             if (err) {
-                 alert(err);
-                 alert('This docker machine is not working properly');
-             }  else {
-                 //console.log(result);
-                 //alert(`Good! Got response from ${machine.address}:${machine.port}`);
-                 Meteor.call('docker.checkImage', machine, (err, result)=>{
-                     if (err) {
-                         alert(err);
-                     } else {
-                         let notFound = false;
-                         for (var key in result) {
-                             if (!result[key].find) {
-                                 notFound = true;
-                                 alert(`Image (${result[key].image}) is needed but not found on this Docker host`);
-                             }
-                         }
-                         if (!notFound) {
-                             alert(`Success! ${machine.address}:${machine.port} is reachable and has all images needed`);
-                         }
-                     }
-                 });
-             }
+            if (err) {
+                alert('This docker machine is not working properly.');
+                alert(err);
+            }  else {
+                console.log(`Good! Got info response from ${machine.address}:${machine.port}`);
+                Meteor.call('docker.checkImage', machine, (err, result) => {
+                    console.log(`Got checkImage response from ${machine.address}:${machine.port}`);
+
+                    if (err) {
+                        alert(err);
+                        return;
+                    }
+
+                    console.log(result);
+
+                    const missingImages = result.filter(image => image.find == false);
+
+                    console.log('Missing images:');
+                    console.log(missingImages);
+
+                    if (missingImages.length === 0) {
+                        alert(`Success! ${machine.address}:${machine.port} is reachable and has all images needed`);
+                    } else {
+                        alert(`Images \n${missingImages.map(i => i.image).join(' ')}\n are needed but aren't available on ${machine.address}:${machine.port}`);
+                    }
+                });
+            }
         });
     }
     checkAllMachines(){
-        Meteor.call('docker.checkAllMachines', ()=>{
+        Meteor.call('docker.checkAllMachines', () => {
             return;
         });
     }
