@@ -314,8 +314,8 @@ class DockerConfig extends Component {
         ));
     }
     addDockerMachine () {
-        let address = prompt('Please enter Docker API address (without port)', '');
-        let port = prompt(`Please enter port for ${address}`);
+        let address = prompt('Please enter Docker API address (without port)', '172.17.0.1');
+        let port = prompt(`Please enter port for ${address}`, '2376');
         Meteor.call('docker.addMachine', {
             address: address,
             port: port
