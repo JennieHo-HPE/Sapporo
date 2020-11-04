@@ -150,10 +150,14 @@ Meteor.startup(() => {
                     future.throw('cannot connect to Docker');
                     return;
                 }
-                let images = data.map((image)=>{
+                let images = data.map((image) => {
+                    // Ignore images without tag
+                    if (image.RepoTags == null)
+                        return null;
+
                     return image.RepoTags[0];
-                });
-                let result = dockerLangs.map((lang)=>{
+                }).filter(image => image != null);
+                let missingImages = dockerLangs.map((lang) => {
                     for (var key in images) {
                         if (lang.image === images[key]) {
                             return {
