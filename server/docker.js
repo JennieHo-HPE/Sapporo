@@ -281,29 +281,62 @@ const getTimeOutValue = function (isMSecond) {
     return timeout;
 };
 
+const isInstanceAvailable = (instance) => {
+    let future = new Future();
+    instance.info((err, data) => {
+        if (err) {
+            future.return(false);
+        } else {
+            future.return(true);
+        }
+    });
+    return future.wait();
+}
+
 const getDockerInstance = function() {
-    let dockerConfig,
-        dockerConfigArray = docker.find({available: true}).fetch();
+    const dockerConfigArray = docker.find({available: true}).fetch();
+
+    // 3 seconds as a buffer time for container to stop itself
+    const timeout = getTimeOutValue(true) + 3000;
     
     // No docker target, use localhost.
     if (!dockerConfigArray || dockerConfigArray.length === 0) {
         let dockerSocket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
         return new Dockerode({
             socketPath: dockerSocket,
-            timeout: getTimeOutValue(true) + 3000 //3 seconds as a buffer time for container to stop itself
-        });
-    } else {
-        currentDockerIdx %= dockerConfigArray.length;
-        dockerConfig = dockerConfigArray[currentDockerIdx];
-        currentDockerIdx += 1;
-        // console.log(currentDockerIdx);
-        // console.log(dockerConfigArray);
-        return new Dockerode({
-            host: dockerConfig.address,
-            port: dockerConfig.port,
-            timeout: getTimeOutValue(true) + 3000
+            timeout: timeout
         });
     }
+
+    // Round robin through all docker instances
+    currentDockerIdx %= dockerConfigArray.length;
+    const dockerConfig = dockerConfigArray[currentDockerIdx];
+    currentDockerIdx += 1;
+
+    const instance = new Dockerode({
+        host: dockerConfig.address,
+        port: dockerConfig.port,
+        timeout: timeout
+    });
+
+    // Check if instance is available and get another one if not
+    if (!isInstanceAvailable(instance)) {
+        console.log(`Docker instance at ${dockerConfig.address}:${dockerConfig.port} isn't available anymore`);
+
+        // This will gradually reduce the list of available hosts.
+        // Therefore the admin must monitor the availability of hosts
+        dockerConfig.available = false;
+        docker.update({
+            _id: dockerConfig._id
+        }, {
+            $set: dockerConfig
+        });
+
+        // Try to get another one
+        return getDockerInstance();
+    }
+
+    return instance;
 };
 
 const reachMax = function (id) {
