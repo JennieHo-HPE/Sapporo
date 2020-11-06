@@ -171,7 +171,7 @@ Meteor.startup(() => {
                         find: false
                     };
                 });
-                future.return(result);
+                future.return(missingImages);
             });
             return future.wait();
         },
