@@ -129,7 +129,11 @@ class Main extends Component {
         this.setState({
             inLogin: (page === 'login')? true : false
         }, () => {
-            goPage(page, data);
+            if (page === 'survey') {
+                window.open('https://forms.office.com/Pages/ResponsePage.aspx?id=YSBbEGm2MUuSrCTTBNGV3HK7avQWgm9JtdbDOf_tXuZUMFhLU1BDVE9ZNk9UVUY5WEE0UEtHSUlQSS4u', 'popUpWindow');
+            } else {
+              goPage(page, data);
+            }
             this.navClose();
         });
     }
