@@ -90,13 +90,13 @@ class Main extends Component {
         return array.map((problem, key) => {
             if (this.props._timer && this.props._timer.coding && Meteor.user()) {
                 let currentUser = getCurrentUserData(Meteor.user()._id, this.props._userData);
-                
+
                 let defaultLang = currentUser.language || (this.props._language[0]? this.props._language[0].iso : null);
                 // No language means we can't render problems correctly.
                 if (!defaultLang) {
                     return;
                 }
-                
+
                 // Backward compatitle
                 let title = problem.title[defaultLang] || problem.title;
 
@@ -130,7 +130,9 @@ class Main extends Component {
             inLogin: (page === 'login')? true : false
         }, () => {
             if (page === 'survey') {
-                window.open('https://forms.office.com/Pages/ResponsePage.aspx?id=YSBbEGm2MUuSrCTTBNGV3HK7avQWgm9JtdbDOf_tXuZUMFhLU1BDVE9ZNk9UVUY5WEE0UEtHSUlQSS4u', 'popUpWindow');
+                window.open(
+                    this.props._sapporo ? this.props._sapporo.surveyURL
+                    : 'https://', 'popUpWindow');
             } else {
               goPage(page, data);
             }
@@ -201,6 +203,7 @@ class Main extends Component {
         }
     }
     render () {
+        document.title = this.props._sapporo ? this.props._sapporo.appTitle : '';
         return (
             <div>
                 <AppBar title={this.props._sapporo? this.props._sapporo.title:''} onLeftIconButtonTouchTap={this.navOpen.bind(this)}>

@@ -26,8 +26,10 @@ Meteor.startup(() => {
 
     if ((sapporo.find({sapporo:true}).fetch()).length === 0) {
         sapporo.insert({
-            sapporo:true,
+            sapporo: true,
             title: 'sapporo',
+            appTitle: 'sapporo',
+            surveyURL: 'https://forms.office.com/',
             timeout: 10,
             submitwait: 1,
             createAccount: true,

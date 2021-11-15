@@ -268,16 +268,67 @@ class System extends Component {
             <div>
                 <div style={style}>
                     <div style={inlineDiv}>
-                            <TextField type="text" id="projectName" floatingLabelText="Project Name"
-                                       value={this.state.sapporo.title} onChange={this.updateSapporo.bind(this, 'title')}/>
-                            <TextField type="number" min="0" floatingLabelText="timeout" style={numberInput}
-                                       value={this.state.sapporo.timeout} onChange={this.updateSapporo.bind(this, 'timeout')} id="timeout"/>
-                                   <TextField type="number" min="0" floatingLabelText="Submission Interval" style={numberInput}
-                                       value={this.state.sapporo.submitwait} onChange={this.updateSapporo.bind(this, 'submitwait')} id="submitwait"/>
-                                   <TextField type="number" min="1" floatingLabelText="Maximun Execution" style={numberInput}
-                                       value={this.state.sapporo.maxExe} onChange={this.updateSapporo.bind(this, 'maxExe')} id="maxExe"/>
+                        <TextField
+                            type="text"
+                            fullWidth
+                            id="projectName"
+                            floatingLabelText="Project Name (Title in the nav bar)"
+                            value={this.state.sapporo.title}
+                            onChange={this.updateSapporo.bind(this, 'title')}
+                        />
+                        <br />
+                        <TextField
+                            type="text"
+                            fullWidth
+                            id="appTitle"
+                            floatingLabelText="App Title"
+                            value={this.state.sapporo.appTitle}
+                            onChange={this.updateSapporo.bind(this, 'appTitle')}
+                        />
+                        <br />
+                        <TextField
+                            type="text"
+                            fullWidth
+                            id="surveyURL"
+                            floatingLabelText="Survey URL"
+                            value={this.state.sapporo.surveyURL}
+                            onChange={this.updateSapporo.bind(this, 'surveyURL')}
+                        />
+                        <br />
+                        <TextField
+                            type="number"
+                            min="0"
+                            floatingLabelText="timeout"
+                            style={numberInput}
+                            value={this.state.sapporo.timeout}
+                            onChange={this.updateSapporo.bind(this, 'timeout')}
+                            id="timeout"
+                        />
+                        <TextField
+                            type="number"
+                            min="0"
+                            floatingLabelText="Submission Interval"
+                            style={numberInput}
+                            value={this.state.sapporo.submitwait}
+                            onChange={this.updateSapporo.bind(this, 'submitwait')}
+                            id="submitwait"
+                        />
+                        <TextField
+                            type="number"
+                            min="1"
+                            floatingLabelText="Maximun Execution"
+                            style={numberInput}
+                            value={this.state.sapporo.maxExe}
+                            onChange={this.updateSapporo.bind(this, 'maxExe')}
+                            id="maxExe"
+                        />
                     </div>
-                    <Toggle labelPosition="right" label="Allow Account Creation" onToggle={this.updateSapporo.bind(this, 'createAccount')} toggled={this.state.sapporo.createAccount}/>
+                    <Toggle
+                        labelPosition="right"
+                        label="Allow Account Creation"
+                        onToggle={this.updateSapporo.bind(this, 'createAccount')}
+                        toggled={this.state.sapporo.createAccount}
+                    />
                 </div>
                 <div style={style}>
                     <div>
