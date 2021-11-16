@@ -98,8 +98,8 @@ class Main extends Component {
                 }
 
                 // Backward compatitle
-                let title =
-                    problem.title[defaultLang] === undefined && problem.title;
+                let title = problem.title[defaultLang] === undefined ?
+                    problem.title : problem.title[defaultLang];
 
                 let icon = <NotpassIcon />;
                 let color = 'grey';
