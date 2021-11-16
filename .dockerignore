@@ -1,2 +1,8 @@
 runtime
 Dockerfile
+docker-compose.yml
+node_modules
+.auto_test
+.git
+.github
+.gitignores
