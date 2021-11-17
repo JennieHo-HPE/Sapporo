@@ -276,7 +276,6 @@ class System extends Component {
                             value={this.state.sapporo.title}
                             onChange={this.updateSapporo.bind(this, 'title')}
                         />
-                        <br />
                         <TextField
                             type="text"
                             fullWidth
@@ -285,7 +284,6 @@ class System extends Component {
                             value={this.state.sapporo.appTitle}
                             onChange={this.updateSapporo.bind(this, 'appTitle')}
                         />
-                        <br />
                         <TextField
                             type="text"
                             fullWidth
@@ -294,7 +292,6 @@ class System extends Component {
                             value={this.state.sapporo.surveyURL}
                             onChange={this.updateSapporo.bind(this, 'surveyURL')}
                         />
-                        <br />
                         <TextField
                             type="number"
                             min="0"
