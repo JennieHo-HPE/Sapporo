@@ -88,9 +88,18 @@ class ProblemEditor extends Component {
     }
     renderLangOptions () {
         if (!this.props._docker) return;
-        return this.props._docker.map((lang, key) => (
-            <MenuItem key={key} value={lang.title} primaryText={lang.title}></MenuItem>
-        ));
+        return this.props._docker
+            .sort((a, b) => {
+                a = String(a.title), b = String(b.title);
+                return a > b ? 1 : (a < b ? -1 : 0);
+            })
+            .map((lang, key) => (
+                <MenuItem
+                    key={key}
+                    value={String(lang.title)}
+                    primaryText={String(lang.title)}
+                />
+            ));
     }
     updateTheme(event, index, value) {
         this.setState({
