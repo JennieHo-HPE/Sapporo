@@ -181,7 +181,7 @@ class Dashboard extends Component {
                 style={{
                     backgroundColor: 'rgba(128,203,196,0.8)',
                     width: '98%',
-                    margin: '0 1% 1%',
+                    margin: '0 1% .4em 1%',
                     boxShadow: '.1em .1em .2em #004D40'
                 }}
                 primaryText={item.title}
@@ -192,9 +192,16 @@ class Dashboard extends Component {
     }
     getLiveFeedTile () {
         return (
-            <List>
-                {this.liveFeedLogs(this)}
-            </List>
+            <div
+                style={{
+                    height: 'calc(100% - 48px)',
+                    overflowY: 'auto'
+                }}
+            >
+                <List>
+                    {this.liveFeedLogs(this)}
+                </List>
+            </div>
         );
     }
     getPassProblemTile () {
