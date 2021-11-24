@@ -185,10 +185,7 @@ class Dashboard extends Component {
                     boxShadow: '.1em .1em .2em #004D40'
                 }}
                 primaryText={item.title}
-                secondaryText={
-                    `${item.date_created.toLocaleTimeString()}\
-                     - ${item.date_created.toLocaleDateString()}`
-                }
+                secondaryText={item.date_created.toLocaleString()}
                 onTouchTap={this.openFeed.bind(this, item)}
             />
         ));
@@ -375,7 +372,10 @@ class Dashboard extends Component {
                             open={this.state.dialogOpen}
                             onRequestClose={this.closeFeed.bind(this)}
                         >
-                            <h5>{this.state.clickFeed.date_created.toLocaleTimeString()}</h5>
+                            <h5>
+                                {this.state.clickFeed.date_created
+                                    .toLocaleString()}
+                            </h5>
                             <textArea
                                 value={this.state.clickFeed.content}
                                 style={{width:'100%', height:'200px', maxHeight:'200px', border:'none'}}

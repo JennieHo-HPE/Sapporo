@@ -13,10 +13,10 @@ import ReadIcon from 'material-ui/lib/svg-icons/content/drafts';
 import { liveFeed } from '../api/db.js';
 import { setMailAsRead, isMailRead } from '../library/mail.js';
 
-const dateOption = {
-    weekday: 'long', year: 'numeric', month: 'short',
-    day: 'numeric', hour: '2-digit', minute: '2-digit'
-};
+////const dateOption = {
+////    weekday: 'long', year: 'numeric', month: 'short',
+////    day: 'numeric', hour: '2-digit', minute: '2-digit'
+////};
 
 class Mailbox extends Component {
     constructor(props) {
@@ -27,8 +27,13 @@ class Mailbox extends Component {
     }
     renderLiveFeeds () {
         return this.props._liveFeed.map((item, key) => (
-            <ListItem key={key} primaryText={item.title} secondaryText={item.date_created.toLocaleTimeString()}
-                      onTouchTap={this.openFeed.bind(this, item)} leftIcon={this.hasRead(item)}/>
+            <ListItem
+                key={key}
+                primaryText={item.title}
+                secondaryText={item.date_created.toLocaleString()}
+                onTouchTap={this.openFeed.bind(this, item)}
+                leftIcon={this.hasRead(item)}
+            />
         ));
     }
     hasRead (item) {
@@ -60,7 +65,7 @@ class Mailbox extends Component {
                 {this.state.clickFeed?
                     <Dialog title={this.state.clickFeed.title} actions={actions} modal={false} key="mailDialog"
                             open={this.state.dialogOpen} onRequestClose={this.closeFeed.bind(this)}>
-                        <h5>{this.state.clickFeed.date_created.toLocaleTimeString('en-us', dateOption)}</h5>
+                        <h5>{this.state.clickFeed.date_created.toLocaleString()}</h5>
                         <textArea value={this.state.clickFeed.content} style={{width:'100%', height:'200px', maxHeight:'200px', border:'none'}} readOnly={true}></textArea>
                     </Dialog>
                 :''

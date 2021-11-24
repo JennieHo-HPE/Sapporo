@@ -12,10 +12,10 @@ import FlatButton from 'material-ui/lib/flat-button';
 
 import { liveFeed } from '../../api/db.js';
 
-const dateOption = {
-    weekday: 'long', year: 'numeric', month: 'short',
-    day: 'numeric', hour: '2-digit', minute: '2-digit'
-};
+////const dateOption = {
+////    weekday: 'long', year: 'numeric', month: 'short',
+////    day: 'numeric', hour: '2-digit', minute: '2-digit'
+////};
 
 class LiveFeed extends Component {
     constructor(props) {
@@ -91,7 +91,7 @@ class LiveFeed extends Component {
                 {this.state.clickFeed?
                     <Dialog title={this.state.clickFeed.title} actions={actions} modal={false}
                             open={this.state.dialogOpen} onRequestClose={this.closeFeed.bind(this)}>
-                        <h5>{this.state.clickFeed.date_created.toLocaleTimeString('en-us', dateOption)}</h5>
+                        <h5>{this.state.clickFeed.date_created.toLocaleString()}</h5>
                         <textArea value={this.state.clickFeed.content} style={{width:'100%', height:'200px'}} readOnly={true}></textArea>
                     </Dialog>
                 :''
