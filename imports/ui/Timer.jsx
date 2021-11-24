@@ -26,10 +26,10 @@ class Timer extends Component {
                     let min = schedule.time.min % 60;
                     if (schedule.start) {
                         return (
-                                <span>
+                                <div>
                                     Game On!<br/>
-                                    ⏲️ {`${hr}hr ${min}m ${schedule.time.sec}s`}
-                                </span>
+                                    <span style={{fontWeight: '400'}}>⏲️</span> {`${hr}hr ${min}m ${schedule.time.sec}s`}
+                                </div>
                         );
                     } else {
                         return (

@@ -275,7 +275,14 @@ class Dashboard extends Component {
     render () {
         const tilesData = [
             {
-                title: Meteor.user()? (Meteor.user().username? Meteor.user().username:(Meteor.user().profile?Meteor.user().profile.name:'')):'Invalid User', //Will create Library for user credential later
+                title: Meteor.user() ?
+                    (Meteor.user().username ?
+                        Meteor.user().username
+                        : (Meteor.user().profile ?
+                            Meteor.user().profile.name
+                            : ''))
+                    : 'Invalid User',
+                    //Will create Library for user credential later
                 featured: true,
                 cols: 2,
                 image: '/images/cwinprogress.jpg',
@@ -284,7 +291,8 @@ class Dashboard extends Component {
                 backgroundPosition: '0 20%',
                 icon: <IconButton><AccountIcon color="white" /></IconButton>,
                 content: this.textContent(
-                    'Hello! <span style="font-size: 1.4em">☺</span><br>Welcome to CodeWars Competition System'
+                    'Hello! <span style="font-size: 1.4em">☺</span><br>Welcome \
+                    to CodeWars Competition System'
                 )
             },
             {
@@ -327,7 +335,8 @@ class Dashboard extends Component {
                 class: 'hoverItem',
                 icon: <IconButton><AboutIcon color="white" /></IconButton>,
                 click: this.createUserManualCb(),
-                content: this.textContent('📖', '4.5rem')
+                content: this.textContent(
+                    '<span style="font-weight: 400">📖</span>', '4.5rem')
             },
             {
                 title: 'About',
