@@ -207,8 +207,11 @@ class Main extends Component {
         document.title = this.props._sapporo ? this.props._sapporo.appTitle : '';
         return (
             <div>
-                <AppBar title={this.props._sapporo? this.props._sapporo.title:''} onLeftIconButtonTouchTap={this.navOpen.bind(this)}>
-                </AppBar>
+                <AppBar
+                    style={{backgroundColor: '#0097a7'}}
+                    title={this.props._sapporo ? this.props._sapporo.title : ''}
+                    onLeftIconButtonTouchTap={this.navOpen.bind(this)}
+                />
                 <Snackbar open={this.state.prompt} message={this.state.promptMessage} onRequestClose={this.closePrompt.bind(this)} onActionTouchTap={this.closePrompt.bind(this)} action='OK'/>
                 <LeftNav  docked={false} open={this.state.open} width={350} onRequestChange={this.navClose.bind(this)}>
                     <MenuItem leftIcon={<DashboardIcon />} onTouchTap={this.goPageWrap.bind(this, 'dashboard')}>Dashboard</MenuItem>

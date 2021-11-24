@@ -6,10 +6,11 @@ import { timer } from '../api/db.js';
 import { timeSchedule } from '../library/timeLib.js';
 
 const timerStyle = {
-    height: '60px',
-    position: 'relative',
+    position: 'absolute',
     top: '50%',
-    marginTop: '-30px'
+    left: '50%',
+    transform: 'translateY(-50%) translateX(-50%)',
+    width: '90%'
 };
 
 class Timer extends Component {
@@ -26,8 +27,8 @@ class Timer extends Component {
                     if (schedule.start) {
                         return (
                                 <span>
-                                    Game On! Time Left:<br/>
-                                    {`${hr}hr ${min}m ${schedule.time.sec}s`}
+                                    Game On!<br/>
+                                    ⏲️ {`${hr}hr ${min}m ${schedule.time.sec}s`}
                                 </span>
                         );
                     } else {

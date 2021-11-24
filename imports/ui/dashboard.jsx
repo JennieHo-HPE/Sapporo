@@ -41,24 +41,28 @@ const cellHeight = function () {
         return 300;
     }
 };
-const customTileStyle = {
+const tileStyleOuter = {
     height: 'inherit',
-    textAlign:'center',
-    lineHeight: String(cellHeight())+'px',
-    fontSize: String(cellHeight())+'%',
+    textAlign: 'center',
     fontWeight: 'bold',
-    color: 'white'
+    color: 'white',
+    position: 'relative'
+};
+const tileStyleInner = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translateY(-50%) translateX(-50%)',
+    width: '90%'
 };
 const getTimerTile = function (timer) {
-
     return(
-        <div style={{
-                fontSize: '30px',
-                height: 'inherit',
-                textAlign:'center',
-                fontWeight: 'bold',
-                color: 'white',
-            }}>
+        <div
+            style={{
+                ...tileStyleOuter,
+                fontSize: '1.875rem'
+            }}
+        >
             {timer}
         </div>
     );
@@ -75,10 +79,17 @@ class Dashboard extends Component {
     }
     tileStyle(tile) {
         return {
-            backgroundImage: 'url("' + tile.image + '")',
+            backgroundImage:
+                tile.image == undefined ? '' :  `url("${tile.image}")`,
             backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover'
+            backgroundPosition:
+                tile.backgroundPosition == undefined ?
+                'center' :
+                tile.backgroundPosition,
+            backgroundSize:
+                tile.backgroundSize == undefined ?
+                'cover' :
+                tile.backgroundSize
         };
     }
     getScoreTile () {
@@ -87,16 +98,99 @@ class Dashboard extends Component {
         let score = getUserTotalScore(userData, this.props._problem);
         let totalScore = getTotalScore(this.props._problem);
         return (
-            <div style={customTileStyle}>
-                <span>{score} / {totalScore}</span>
+            <div
+                style={{
+                    ...tileStyleOuter,
+                    fontSize: '4.5rem'
+                }}
+            >
+                <div style={tileStyleInner}>
+                    {score} / {totalScore}
+                </div>
             </div>
+        );
+    }
+    getLegalLinks() {
+        return (
+            <div
+               style={{
+                   ...tileStyleOuter,
+                   fontSize: '1.875rem',
+                   textAlign: 'left'
+               }}
+           >
+               <div
+                   style={{
+                       ...tileStyleInner,
+                       width: 'auto'
+                   }}
+               >
+                    <div style={{whiteSpace: 'nowrap'}}>
+                        🗎 <a
+                            style={{
+                                color: 'white !important',
+                                textDecoration: 'none !important'
+                            }}
+                            target="_blank"
+                            href="https://www.hpe.com/us/en/legal/privacy.html"
+                        >
+                            Privacy
+                        </a>
+                        &nbsp;/&nbsp;
+                        <a
+                            style={{
+                                color: 'white !important',
+                                textDecoration: 'none !important'
+                            }}
+                            target="_blank"
+                            href="https://www.hpe.com/tw/zh/legal/privacy.html"
+                        >
+                            隱私權
+                        </a>
+                        <br />
+                        🗎 <a
+                            style={{
+                                color: 'white !important',
+                                textDecoration: 'none !important'
+                            }}
+                            target="_blank"
+                            href="https://www.hpe.com/us/en/about/legal/terms-of-use.html"
+                        >
+                            Terms of Use
+                        </a>
+                        &nbsp;/&nbsp;
+                        <a
+                            style={{
+                                color: 'white !important',
+                                textDecoration: 'none !important'
+                            }}
+                            target="_blank"
+                            href="https://www.hpe.com/tw/zh/about/legal/terms-of-use.html"
+                        >
+                            使用條款
+                        </a>
+                    </div>
+               </div>
+           </div>
         );
     }
     liveFeedLogs () {
         return this.props._liveFeed.map((item, key) => (
-            <ListItem key={key} style={{borderBottom:'1px solid #AAA', backgroundColor:'rgba(255,255,255,0.5)', width:'99%', margin:'0.5%'}}
-                      primaryText={item.title} secondaryText={item.date_created.toLocaleTimeString()}
-                      onTouchTap={this.openFeed.bind(this, item)}/>
+            <ListItem
+                key={key}
+                style={{
+                    backgroundColor: 'rgba(128,203,196,0.8)',
+                    width: '98%',
+                    margin: '0 1% 1%',
+                    boxShadow: '.1em .1em .2em #004D40'
+                }}
+                primaryText={item.title}
+                secondaryText={
+                    `${item.date_created.toLocaleTimeString()}\
+                     - ${item.date_created.toLocaleDateString()}`
+                }
+                onTouchTap={this.openFeed.bind(this, item)}
+            />
         ));
     }
     getLiveFeedTile () {
@@ -112,14 +206,21 @@ class Dashboard extends Component {
         let userData = getCurrentUserData(Meteor.user()._id, this.props._userData);
         let passProblem = getUserPassedProblem(userData, this.props._problem);
         return (
-            <div style={customTileStyle}>
-                <span>{passProblem} / {totalProblem}</span>
+            <div
+                style={{
+                    ...tileStyleOuter,
+                    fontSize: '4.5rem'
+                }}
+            >
+                <div style={tileStyleInner}>
+                    {passProblem} / {totalProblem}
+                </div>
             </div>
         );
     }
     createUserManualCb() {
         let currentUser = getCurrentUserData(Meteor.user()._id, this.props._userData);
-        let defaultLang = currentUser.language || (this.props._language[0]? this.props._language[0].iso : null);
+        ////let defaultLang = currentUser.language || (this.props._language[0]? this.props._language[0].iso : null);
 
         return function () {
             window.open('https://hpcodewars.com.tw/user-guides', 'popUpWindow');
@@ -143,9 +244,19 @@ class Dashboard extends Component {
         });
         setMailAsRead(item);
     }
-    textContent (text) {
+    textContent (text, fontSize) {
         return (
-            <div style={customTileStyle}><span>{text}</span></div>
+            <div
+                style={{
+                    ...tileStyleOuter,
+                    fontSize: !fontSize ? '1.875rem' : fontSize
+                }}
+            >
+                <div
+                    style={tileStyleInner}
+                    dangerouslySetInnerHTML={{__html: text}}
+                />
+            </div>
         );
     }
     closeFeed () {
@@ -158,70 +269,86 @@ class Dashboard extends Component {
         render(<About />, document.getElementById('section'));
     }
     render () {
-        const tilesData = [{
-            title: Meteor.user()? (Meteor.user().username? Meteor.user().username:(Meteor.user().profile?Meteor.user().profile.name:'')):'Invalid User', //Will create Library for user credential later
-            featured: true,
-            cols: 2,
-            image: '/images/1.jpg',
-            backgroundColor: 'rgba(0,40,80,0.3)',
-            icon: <IconButton><AccountIcon color="white" /></IconButton>,
-            content: this.textContent('Hello :)')
-        }, {
-            title: 'Inbox Preview',
-            cols: 2,
-            backgroundColor: 'rgba(0,165,165,0.6)',
-            titleBG: 'rgba(0,0,0,0.8)',
-            image: '/images/2.jpg',
-            icon: <IconButton><MessageIcon color="white" /></IconButton>,
-            content: this.getLiveFeedTile()
-        },  {
-            title: 'Time',
-            cols: 2,
-            image: '/images/6.jpg',
-            backgroundColor: 'rgba(0,40,80, 0.6)',
-            content: getTimerTile(<Timer/>),
-            icon: <IconButton><ClockIcon color="white" /></IconButton>
-        }, {
-            title: 'Total Score',
-            featured: true,
-            cols: 3,
-            image: '/images/4.jpg',
-            backgroundColor: 'rgba(150,50,50,0.6)',
-            content: this.getScoreTile(),
-            icon: <IconButton><TotalIcon color="white" /></IconButton>
-        }, {
-            title: 'Passed Problems',
-            cols: 3,
-            image: '/images/3.jpg',
-            backgroundColor: 'rgba(100,20,60,0.6)',
-            content: this.getPassProblemTile(),
-            icon: <IconButton><PassIcon color="white" /></IconButton>
-        }, {
-            title: 'User Guide',
-            cols: 2,
-            backgroundColor: 'rgba(0,165,165,0.6)',
-            image: '/images/7.png',
-            class: 'hoverItem',
-            icon: <IconButton><AboutIcon color="white" /></IconButton>,
-            click: this.createUserManualCb(),
-        }, {
-            title: 'Codewars World Wide',
-            cols: 2,
-            backgroundColor: 'rgba(0,80,160, 0.6)',
-            icon: <IconButton><AboutIcon color="white" /></IconButton>,
-            image: '/images/8.jpg',
-            class:'hoverItem',
-            content: this.textContent('Everywhere')
-        }, {
-            title: 'About This System',
-            cols: 2,
-            backgroundColor: 'rgba(0,165,165,0.6)',
-            icon: <IconButton><AboutIcon color="white" /></IconButton>,
-            image: '/images/5.jpg',
-            class: 'hoverItem',
-            content: this.textContent('Oh?'),
-            click: this.renderAbout
-        }];
+        const tilesData = [
+            {
+                title: Meteor.user()? (Meteor.user().username? Meteor.user().username:(Meteor.user().profile?Meteor.user().profile.name:'')):'Invalid User', //Will create Library for user credential later
+                featured: true,
+                cols: 2,
+                image: '/images/cwinprogress.jpg',
+                backgroundColor: 'rgba(33,33,33,0.6)',
+                backgroundSize: '200%',
+                backgroundPosition: '0 20%',
+                icon: <IconButton><AccountIcon color="white" /></IconButton>,
+                content: this.textContent(
+                    'Hello! <span style="font-size: 1.4em">☺</span><br>Welcome to CodeWars Competition System'
+                )
+            },
+            {
+                title: 'Inbox',
+                cols: 2,
+                backgroundColor: 'rgba(33,33,33,0.6)',
+                backgroundSize: '200%',
+                backgroundPosition: '100% 20%',
+                titleBG: 'rgba(0,0,0,0.8)',
+                image: '/images/cwinprogress.jpg',
+                icon: <IconButton><MessageIcon color="white" /></IconButton>,
+                content: this.getLiveFeedTile()
+            },
+            {
+                title: 'Timer',
+                cols: 2,
+                backgroundColor: '#ff7043',
+                icon: <IconButton><ClockIcon color="white" /></IconButton>,
+                content: getTimerTile(<Timer/>)
+            },
+            {
+                title: '# of Problems Solved',
+                cols: 3,
+                backgroundColor: '#26a69a',
+                icon: <IconButton><PassIcon color="white" /></IconButton>,
+                content: this.getPassProblemTile()
+            },
+            {
+                title: 'Total Score',
+                featured: true,
+                cols: 3,
+                backgroundColor: '#FFCA28',
+                icon: <IconButton><TotalIcon color="white" /></IconButton>,
+                content: this.getScoreTile()
+            },
+            {
+                title: 'User Guide',
+                cols: 2,
+                backgroundColor: '#7e57c2',
+                class: 'hoverItem',
+                icon: <IconButton><AboutIcon color="white" /></IconButton>,
+                click: this.createUserManualCb(),
+                content: this.textContent('📖', '4.5rem')
+            },
+            {
+                title: 'About',
+                cols: 2,
+                backgroundColor: 'rgba(33,33,33,0.6)',
+                backgroundSize: '200%',
+                backgroundPosition: '0 25%',
+                icon: <IconButton><AboutIcon color="white" /></IconButton>,
+                image: '/images/coders.jpg',
+                class: 'hoverItem',
+                content: this.textContent('CodeWars System Ver. 2.1'),
+                click: this.renderAbout
+            },
+            {
+                title: 'Legal',
+                cols: 2,
+                backgroundColor: 'rgba(33,33,33,0.6)',
+                backgroundSize: '200%',
+                backgroundPosition: '100% 25%',
+                icon: <IconButton><AboutIcon color="white" /></IconButton>,
+                image: '/images/coders.jpg',
+                cclass:'hoverItem',
+                content: this.getLegalLinks()
+            }
+        ];
         const actions = [
             <FlatButton label="exit" primary={true} onTouchTap={this.closeFeed.bind(this)} />
         ];
@@ -239,13 +366,23 @@ class Dashboard extends Component {
                     </GridTile>
                   ))}
                 </GridList>
-                { this.state.clickFeed?
-                    <Dialog title={this.state.clickFeed.title} actions={actions} modal={false}
-                            open={this.state.dialogOpen} onRequestClose={this.closeFeed.bind(this)}>
-                        <h5>{this.state.clickFeed.date_created.toLocaleTimeString()}</h5>
-                        <textArea value={this.state.clickFeed.content} style={{width:'100%', height:'200px', maxHeight:'200px', border:'none'}} readOnly={true}></textArea>
-                    </Dialog>
-                :''
+                {
+                    this.state.clickFeed ?
+                        <Dialog
+                            title={this.state.clickFeed.title}
+                            actions={actions}
+                            modal={false}
+                            open={this.state.dialogOpen}
+                            onRequestClose={this.closeFeed.bind(this)}
+                        >
+                            <h5>{this.state.clickFeed.date_created.toLocaleTimeString()}</h5>
+                            <textArea
+                                value={this.state.clickFeed.content}
+                                style={{width:'100%', height:'200px', maxHeight:'200px', border:'none'}}
+                                readOnly={true}
+                            />
+                        </Dialog>
+                        : ''
                 }
             </div>
         );
@@ -264,7 +401,7 @@ export default createContainer(() => {
     Meteor.subscribe('userData');
     Meteor.subscribe('liveFeed');
     Meteor.subscribe('language');
-    
+
     // Pass coding to force resubscribing if coding
     // status changed.
     var db_time = timer.findOne({timeSync: true});
