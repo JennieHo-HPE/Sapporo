@@ -5,7 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import ReactDOM from 'react-dom';
 
 import { sapporo } from '../api/db.js';
-import {goPage} from './goPage.js'
+import {goPage} from './goPage.js';
 
 import TextField from 'material-ui/lib/text-field';
 import Dialog from 'material-ui/lib/dialog';
@@ -14,7 +14,7 @@ import FlatButton from 'material-ui/lib/flat-button';
 const mainImageStyle = {
     marginTop:'10px',
     height: '500px',
-    backgroundImage: 'url(/images/1.jpg)',
+    backgroundImage: 'url(/images/cwinprogress.jpg)',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
