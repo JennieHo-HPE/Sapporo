@@ -132,7 +132,7 @@ class Dashboard extends Component {
                                 textDecoration: 'none !important'
                             }}
                             target="_blank"
-                            href="https://www.hpe.com/us/en/legal/privacy.html"
+                            href="https://www.hpcodewars.com.tw/privacy_en"
                         >
                             Privacy
                         </a>
@@ -143,7 +143,7 @@ class Dashboard extends Component {
                                 textDecoration: 'none !important'
                             }}
                             target="_blank"
-                            href="https://www.hpe.com/tw/zh/legal/privacy.html"
+                            href="https://www.hpcodewars.com.tw/privacy_zh"
                         >
                             隱私權
                         </a>
@@ -154,7 +154,7 @@ class Dashboard extends Component {
                                 textDecoration: 'none !important'
                             }}
                             target="_blank"
-                            href="https://www.hpe.com/us/en/about/legal/terms-of-use.html"
+                            href="https://www.hpcodewars.com.tw/terms_en"
                         >
                             Terms of Use
                         </a>
@@ -165,7 +165,7 @@ class Dashboard extends Component {
                                 textDecoration: 'none !important'
                             }}
                             target="_blank"
-                            href="https://www.hpe.com/tw/zh/about/legal/terms-of-use.html"
+                            href="https://www.hpcodewars.com.tw/terms_zh"
                         >
                             使用條款
                         </a>
