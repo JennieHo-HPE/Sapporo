@@ -25,7 +25,7 @@ Meteor.startup(() => {
             for (let index=0; index < machines.length; index++) {
                 let machine = machines[index];
 
-                // Might get nothing from DB if we set them to false. 
+                // Might get nothing from DB if we set them to false.
                 //
                 // machine.available = false;
                 // docker.update({_id: machine._id}, {$set: machine});
@@ -233,7 +233,7 @@ Meteor.startup(() => {
             } else {
                 if (!((timer.findOne({timeSync: true})).coding)) {
                     logRequest(logReason.gameStop);
-                    throw new Meteor.Error(500, 'Game has stopped');
+                    throw new Meteor.Error(500, 'Contest has ended');
                 }
                 let success = true;
                 let result = null;
@@ -298,7 +298,7 @@ const getDockerInstance = function() {
 
     // 3 seconds as a buffer time for container to stop itself
     const timeout = getTimeOutValue(true) + 3000;
-    
+
     // No docker target, use localhost.
     if (!dockerConfigArray || dockerConfigArray.length === 0) {
         let dockerSocket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';

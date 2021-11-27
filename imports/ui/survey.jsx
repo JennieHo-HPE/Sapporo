@@ -5,16 +5,19 @@ import { timer } from '../api/db.js';
 import { survey } from '../api/db.js';
 import { timeSchedule } from '../library/timeLib.js';
 
-import Paper from 'material-ui/lib/paper';
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import SelectField from 'material-ui/lib/select-field';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import TextField from 'material-ui/lib/text-field';
-import Dialog from 'material-ui/lib/dialog';
-import FlatButton from 'material-ui/lib/flat-button';
-import AddIcon from 'material-ui/lib/svg-icons/action/note-add';
-import Divider from 'material-ui/lib/divider';
+import Paper from 'material-ui/Paper';
+import { List, ListItem } from 'material-ui/List';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+
+import AddIcon from 'material-ui/svg-icons/action/note-add';
 
 import {SetInfoErrDialog, SetInfoErrDialogMethods} from './infoErrDialog.jsx';
 
@@ -133,6 +136,7 @@ class Survey extends Component {
             newSurveyOpen: !(this.state.newSurveyOpen)
         });
     }
+
     renderOptions (selections) {
         return selections.map((item, key)=>{
             return (
@@ -140,6 +144,7 @@ class Survey extends Component {
             );
         });
     }
+
     updateSurvey(field, key, event, index, value){
         let tmp = this.state.survey;
         tmp[field][key].value = value;
@@ -147,6 +152,7 @@ class Survey extends Component {
             survey: tmp
         });
     }
+
     renderQuestions() {
         return this.state.survey.questions.map((item, key)=>{
             return (
@@ -158,6 +164,7 @@ class Survey extends Component {
             );
         });
     }
+
     renderOtherQuestions(){
         return this.state.survey.otherQuestions.map((item, key)=>{
             return (
@@ -169,6 +176,7 @@ class Survey extends Component {
             );
         });
     }
+
     updateSurveyTextField (key, event) {
         let tmp = this.state.survey;
         tmp.textField[key].value = event.target.value;
@@ -176,6 +184,7 @@ class Survey extends Component {
             survey: tmp
         });
     }
+
     renderTextField(){
         return this.state.survey.textField.map((item, key)=>{
             return (
@@ -185,6 +194,7 @@ class Survey extends Component {
             );
         });
     }
+
     updateSuggestion (event) {
         let tmp = this.state.survey;
         tmp.suggestion = event.target.value;
@@ -192,24 +202,25 @@ class Survey extends Component {
             survey: tmp
         });
     }
+
     surveyAction (isSubmit) {
         if (isSubmit) {
             // Confirm all the questions are answered.
             let surveyQuestions = this.state.survey.questions;
             let surveyOtherQuestions = this.state.survey.otherQuestions;
 
-            for(var i in surveyQuestions) {
-              if (surveyQuestions[i].value === null) {
-                alert("CodeWars 小天使提示 - 部分問題似乎漏掉回答了 - Please answer all questions.\n");
-                return;
-              }
+            for(let i in surveyQuestions) {
+                if (surveyQuestions[i].value === null) {
+                    alert('CodeWars 小天使提示 - 部分問題似乎漏掉回答了 - Please answer all questions.\n');
+                    return;
+                }
             }
 
-            for(var i in surveyOtherQuestions) {
-              if (surveyOtherQuestions[i].value === null) {
-                alert("CodeWars 小天使提示 - 部分問題似乎漏掉回答了 - Please answer all questions.\n");
-                return;
-              }
+            for(let i in surveyOtherQuestions) {
+                if (surveyOtherQuestions[i].value === null) {
+                    alert('CodeWars 小天使提示 - 部分問題似乎漏掉回答了 - Please answer all questions.\n');
+                    return;
+                }
             }
 
             //console.log(this.state.survey);
@@ -222,6 +233,7 @@ class Survey extends Component {
         this.toggleNewSurveyDialog(true);
 
     }
+
     editSurvey (item) {
         this.setState({
             survey: item.survey,
@@ -229,9 +241,11 @@ class Survey extends Component {
         });
         this.toggleNewSurveyDialog();
     }
+
     componentWillMount () {
         SetInfoErrDialogMethods(this);
     }
+
     renderSurveys () {
         if (this.props._surveyData) {
             return this.props._surveyData.map((item, key)=> {
@@ -242,11 +256,13 @@ class Survey extends Component {
             });
         }
     }
+
     updateFindUser (event) {
         this.setState({
             findName: event.target.value
         });
     }
+
     findUserSurvey(){
         Meteor.call('survey.search', this.state.findName, (err, data)=> {
             if (err) {
@@ -257,6 +273,7 @@ class Survey extends Component {
             });
         });
     }
+
     renderFind(){
         return this.state.surveyFound.map((item, key)=>{
             return (
@@ -267,61 +284,107 @@ class Survey extends Component {
     }
 
     render () {
-
         const actions = [
             <FlatButton label="Cancel" secondary={true} onTouchTap={this.surveyAction.bind(this, false)} />,
             <FlatButton label="Submit" primary={true} keyboardFocused={true} onTouchTap={this.surveyAction.bind(this, true)}/>
         ];
-
         const schedule = timeSchedule(this.props._timer.systemTime, this.props._timer.start, this.props._timer.end);
 
         return (
-            <Paper style={{marginTop:'10px', padding:'10px'}}>
-                {
-                    this.props.currentUser.username === 'admin'?
-                    <div>
-                        <TextField floatingLabelFixed={true} floatingLabelText="search user name" value={this.state.findname} onChange={this.updateFindUser.bind(this)} />
-                        <FlatButton label="Find" primary={true} onTouchTap={this.findUserSurvey.bind(this)} />
-                        <List>
-                            {this.renderFind()}
-                        </List>
-                        <Divider />
-                    </div>
-                    :''
-                }
-                {
-                    (schedule.start && schedule.end)? (
-                        <div>
+            <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
+                <Paper style={{marginTop:'10px', padding:'10px'}}>
+                    {
+                        this.props.currentUser.username === 'admin' ?
                             <div>
-                                {
-                                    (this.props._surveyData.length < 3)? <FlatButton label="New Survey" icon={<AddIcon />} onTouchTap={this.toggleNewSurveyDialog.bind(this, true)}/> : null
-                                }
+                                <TextField
+                                    floatingLabelFixed={true}
+                                    floatingLabelText="search user name"
+                                    value={this.state.findname}
+                                    onChange={this.updateFindUser.bind(this)}
+                                />
+                                <FlatButton
+                                    label="Find"
+                                    primary={true}
+                                    onTouchTap={this.findUserSurvey.bind(this)}
+                                />
+                                <List>
+                                    {this.renderFind()}
+                                </List>
+                                <Divider />
                             </div>
-                            <List>
-                                {this.renderSurveys()}
-                            </List>
-                            {SetInfoErrDialog(this)}
-                            <Dialog title="" actions={actions} modal={false} contentStyle={{maxWidth: 'none'}} open={this.state.newSurveyOpen} onRequestClose={this.toggleNewSurveyDialog.bind(this, true)}
-                                    autoScrollBodyContent={true}>
-                                {this.renderQuestions()}
-                                {this.renderOtherQuestions()}
-                                {this.renderTextField()}
-                                <TextField style={{width:'100%'}} floatingLabelText={['對這次的活動是否有什麼建議呢?', 'Suggestions for CodeWars?'].map(x => x + ' ')} multiLine={true} rows={5}
-                                           value={this.state.survey.suggestion} onChange={this.updateSuggestion.bind(this)} />
-                            </Dialog>
-                        </div>
-                    ) : (
-                        <div>
-                            問卷將在比賽結束後開放...<br/>
-                            The questionnaire will be opened after the competition...
-                        </div>
-                    )
-                }
-            </Paper>
+                            : ''
+                    }
+                    {
+                        (schedule.start && schedule.end) ? (
+                            <div>
+                                <div>
+                                    {
+                                        (this.props._surveyData.length < 3) ?
+                                            <FlatButton
+                                                label="New Survey"
+                                                icon={<AddIcon />}
+                                                onTouchTap={
+                                                    this
+                                                    .toggleNewSurveyDialog
+                                                    .bind(this, true)
+                                                }
+                                            /> : null
+                                    }
+                                </div>
+                                <List>
+                                    {this.renderSurveys()}
+                                </List>
+                                {SetInfoErrDialog(this)}
+                                <Dialog
+                                    title=""
+                                    actions={actions}
+                                    modal={false}
+                                    contentStyle={{maxWidth: 'none'}}
+                                    open={this.state.newSurveyOpen}
+                                    onRequestClose={
+                                        this
+                                        .toggleNewSurveyDialog
+                                        .bind(this, true)
+                                    }
+                                    autoScrollBodyContent={true}
+                                >
+                                    {this.renderQuestions()}
+                                    {this.renderOtherQuestions()}
+                                    {this.renderTextField()}
+                                    <TextField
+                                        style={{width: '100%'}}
+                                        floatingLabelText={
+                                            [
+                                                '對這次的活動是否有什麼建議呢?',
+                                                'Suggestions for CodeWars?'
+                                            ].map(x => x + ' ')
+                                        }
+                                        multiLine={true}
+                                        rows={5}
+                                        value={this.state.survey.suggestion}
+                                        onChange={
+                                            this.updateSuggestion.bind(this)
+                                        }
+                                    />
+                                </Dialog>
+                            </div>
+                        ) : (
+                            <div>
+                                問卷將在比賽結束後開放...
+                                <br />
+                                The questionnaire will be opened after the
+                                competition...
+                            </div>
+                        )
+                    }
+                </Paper>
+            </MuiThemeProvider>
         );
     }
 }
-
+Survey.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired
+};
 Survey.propTypes = {
     _surveyData: PropTypes.array.isRequired,
     currentUser: PropTypes.object,

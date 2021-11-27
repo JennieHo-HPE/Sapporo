@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
@@ -7,12 +6,15 @@ import { timer } from '../../api/db.js';
 import { sapporo } from '../../api/db.js';
 import { generateDate } from '../../library/timeLib.js';
 
-import TextField from 'material-ui/lib/text-field';
-import RaisedButton from 'material-ui/lib/raised-button';
-import Toggle from 'material-ui/lib/toggle';
-import Dialog from 'material-ui/lib/dialog';
-import FlatButton from 'material-ui/lib/flat-button';
-import DatePicker from 'material-ui/lib/date-picker/date-picker';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import Toggle from 'material-ui/Toggle';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import DatePicker from 'material-ui/DatePicker';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 
 const style = {
     padding: '10px 0',
@@ -62,11 +64,13 @@ class System extends Component {
         this.state = initState;
         updateLock = false;
     }
+
     submit () {
         Meteor.call('sapporo.updateSapporo', this.state.sapporo);
         this.submitGameTime();
         updateLock = false;
     }
+
     submitGameTime () {
         let serverTime = this.props._timer.systemTime;
         let startDate = this.state.gameTime.startDate;
@@ -93,6 +97,7 @@ class System extends Component {
             }
         });
     }
+
     updateStartDate (err, date) {
         let gameTime = this.state.gameTime;
         gameTime.startDate = date;
@@ -100,6 +105,7 @@ class System extends Component {
             gameTime: gameTime
         });
     }
+
     updateEndDate (err, date) {
         let gameTime = this.state.gameTime;
         gameTime.endDate = date;
@@ -107,6 +113,7 @@ class System extends Component {
             gameTime: gameTime
         });
     }
+
     updateGameTime (field, event) {
         let time = this.state.gameTime;
         time[field] = event.target.value;
@@ -114,12 +121,14 @@ class System extends Component {
             gameTime: time
         });
     }
+
     displayConfiguredTime (type) {
         if (this.props._timer[type]) {
             return this.props._timer[type].toString();
         }
         return 'Not Configured Yet';
     }
+
     updateSapporo (field, event) {
         let sapporo = this.state.sapporo;
         if (field === 'createAccount') {
@@ -131,6 +140,7 @@ class System extends Component {
             sapporo: sapporo
         });
     }
+
     updateSystemData () {
         if (updateLock) return;
         Meteor.call('findLoginService', 'facebook', (err, toggle) => {
@@ -167,6 +177,7 @@ class System extends Component {
         });
         updateLock = true;
     }
+
     toggleLogin (service) {
         switch (service) {
         case 'facebook':
@@ -194,16 +205,19 @@ class System extends Component {
         }
         updateLock = false;
     }
+
     toggleLoginConfigDialog(target) {
         let tmp = this.state;
         tmp[target] = !tmp[target];
         this.setState(tmp);
     }
+
     updateLoginConfig (field, event) {
         let tmp = this.state;
         tmp[field] = event.target.value;
         this.setState(tmp);
     }
+
     configFacebookLogin () {
         let id = this.state.facebookID;
         let secret = this.state.facebookSecret;
@@ -221,6 +235,7 @@ class System extends Component {
             this.toggleLoginConfigDialog('facebookLoginDialog');
         });
     }
+
     configCodewarsPassportLogin () {
         Meteor.call('configCodewarsPassportLogin', {
             appID: this.state.codewarsPassportID,
@@ -237,6 +252,7 @@ class System extends Component {
             this.toggleLoginConfigDialog('codewarsPassportDialog');
         });
     }
+
     clearSurveyAndContest () {
         if (confirm('Are you sure?')) {
             Meteor.call('survey.clear', (err) => {
@@ -252,134 +268,312 @@ class System extends Component {
 
         }
     }
+
     componentDidUpdate () {
         if (!updateLock) this.updateSystemData();
     }
+
     render () {
         const facebookLoginAction = [
-            <FlatButton label="Submit" primary={true} onTouchTap={this.configFacebookLogin.bind(this)}/>,
-            <FlatButton label="cancel" secondary={true} onTouchTap={this.toggleLoginConfigDialog.bind(this, 'facebookLoginDialog')}/>
+            <FlatButton
+                label="Submit"
+                primary={true}
+                onTouchTap={this.configFacebookLogin.bind(this)}
+            />,
+            <FlatButton
+                label="cancel"
+                secondary={true}
+                onTouchTap={
+                    this
+                    .toggleLoginConfigDialog
+                    .bind(this, 'facebookLoginDialog')
+                }
+            />
         ];
         const codewarsPassportLoginAction = [
-            <FlatButton label="Submit" primary={true} onTouchTap={this.configCodewarsPassportLogin.bind(this)}/>,
-            <FlatButton label="cancel" secondary={true} onTouchTap={this.toggleLoginConfigDialog.bind(this, 'codewarsPassportDialog')}/>
+            <FlatButton
+                label="Submit"
+                primary={true}
+                onTouchTap={this.configCodewarsPassportLogin.bind(this)}
+            />,
+            <FlatButton
+                label="cancel"
+                secondary={true}
+                onTouchTap={
+                    this
+                    .toggleLoginConfigDialog
+                    .bind(this, 'codewarsPassportDialog')
+                }
+            />
         ];
         return (
-            <div>
-                <div style={style}>
-                    <div style={inlineDiv}>
-                        <TextField
-                            type="text"
-                            fullWidth
-                            id="projectName"
-                            floatingLabelText="Project Name (Title in the nav bar)"
-                            value={this.state.sapporo.title}
-                            onChange={this.updateSapporo.bind(this, 'title')}
-                        />
-                        <TextField
-                            type="text"
-                            fullWidth
-                            id="appTitle"
-                            floatingLabelText="App Title"
-                            value={this.state.sapporo.appTitle}
-                            onChange={this.updateSapporo.bind(this, 'appTitle')}
-                        />
-                        <TextField
-                            type="text"
-                            fullWidth
-                            id="surveyURL"
-                            floatingLabelText="Survey URL"
-                            value={this.state.sapporo.surveyURL}
-                            onChange={this.updateSapporo.bind(this, 'surveyURL')}
-                        />
-                        <TextField
-                            type="number"
-                            min="0"
-                            floatingLabelText="timeout"
-                            style={numberInput}
-                            value={this.state.sapporo.timeout}
-                            onChange={this.updateSapporo.bind(this, 'timeout')}
-                            id="timeout"
-                        />
-                        <TextField
-                            type="number"
-                            min="0"
-                            floatingLabelText="Submission Interval"
-                            style={numberInput}
-                            value={this.state.sapporo.submitwait}
-                            onChange={this.updateSapporo.bind(this, 'submitwait')}
-                            id="submitwait"
-                        />
-                        <TextField
-                            type="number"
-                            min="1"
-                            floatingLabelText="Maximun Execution"
-                            style={numberInput}
-                            value={this.state.sapporo.maxExe}
-                            onChange={this.updateSapporo.bind(this, 'maxExe')}
-                            id="maxExe"
+            <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
+                <div>
+                    <div style={style}>
+                        <div style={inlineDiv}>
+                            <TextField
+                                type="text"
+                                fullWidth
+                                id="projectName"
+                                floatingLabelText="Project Name (Title in the nav bar)"
+                                value={this.state.sapporo.title}
+                                onChange={
+                                    this.updateSapporo.bind(this, 'title')
+                                }
+                            />
+                            <TextField
+                                type="text"
+                                fullWidth
+                                id="appTitle"
+                                floatingLabelText="App Title"
+                                value={this.state.sapporo.appTitle}
+                                onChange={
+                                    this.updateSapporo.bind(this, 'appTitle')
+                                }
+                            />
+                            <TextField
+                                type="text"
+                                fullWidth
+                                id="surveyURL"
+                                floatingLabelText="Survey URL"
+                                value={this.state.sapporo.surveyURL}
+                                onChange={
+                                    this.updateSapporo.bind(this, 'surveyURL')
+                                }
+                            />
+                            <TextField
+                                type="number"
+                                min="0"
+                                floatingLabelText="timeout"
+                                style={numberInput}
+                                value={this.state.sapporo.timeout}
+                                onChange={
+                                    this.updateSapporo.bind(this, 'timeout')
+                                }
+                                id="timeout"
+                            />
+                            <TextField
+                                type="number"
+                                min="0"
+                                floatingLabelText="Submission Interval"
+                                style={numberInput}
+                                value={this.state.sapporo.submitwait}
+                                onChange={
+                                    this.updateSapporo.bind(this, 'submitwait')
+                                }
+                                id="submitwait"
+                            />
+                            <TextField
+                                type="number"
+                                min="1"
+                                floatingLabelText="Maximun Execution"
+                                style={numberInput}
+                                value={this.state.sapporo.maxExe}
+                                onChange={
+                                    this.updateSapporo.bind(this, 'maxExe')
+                                }
+                                id="maxExe"
+                            />
+                        </div>
+                        <Toggle
+                            labelPosition="right"
+                            label="Allow Account Creation"
+                            onToggle={
+                                this.updateSapporo.bind(this, 'createAccount')
+                            }
+                            toggled={this.state.sapporo.createAccount}
                         />
                     </div>
-                    <Toggle
-                        labelPosition="right"
-                        label="Allow Account Creation"
-                        onToggle={this.updateSapporo.bind(this, 'createAccount')}
-                        toggled={this.state.sapporo.createAccount}
-                    />
-                </div>
-                <div style={style}>
-                    <div>
-                        <span>{this.displayConfiguredTime('systemTime')} - Server Time</span><br/>
-                        <span>{this.displayConfiguredTime('start')} - Configured Start Time</span><br/>
-                        <span>{this.displayConfiguredTime('end')} - Configured End Time</span><br/>
+                    <div style={style}>
+                        <div>
+                            <span>
+                                {this.displayConfiguredTime('systemTime')}
+                                - Server Time
+                            </span>
+                            <br />
+                            <span>
+                                {this.displayConfiguredTime('start')}
+                                - Configured Start Time
+                            </span>
+                            <br />
+                            <span>
+                                {this.displayConfiguredTime('end')}
+                                - Configured End Time
+                            </span>
+                            <br />
+                        </div>
                     </div>
-                </div>
-                <div style={style}>
-                    <div style={inlineDiv}>
-                        <span>Start Time     :</span>
-                        <DatePicker style={{display: 'inline-block'}} hintText="Start Date" onChange={this.updateStartDate.bind(this)} value={this.state.gameTime.startDate}/>
-                        <TextField id="startHr" type="number" min="0" max="23" placeholder="Start Hour" style={numberInput} value={this.state.gameTime.startHour} onChange={this.updateGameTime.bind(this, 'startHour')}/>
-                        <TextField id="startMin" type="number" min="0" max="59" placeholder="Start Minute" style={numberInput} value={this.state.gameTime.startMinute} onChange={this.updateGameTime.bind(this, 'startMinute')}/>
+                    <div style={style}>
+                        <div style={inlineDiv}>
+                            <span>Start Time     :</span>
+                            <DatePicker
+                                style={{display: 'inline-block'}}
+                                hintText="Start Date"
+                                onChange={this.updateStartDate.bind(this)}
+                                value={this.state.gameTime.startDate}
+                            />
+                            <TextField
+                                id="startHr"
+                                type="number"
+                                min="0"
+                                max="23"
+                                placeholder="Start Hour"
+                                style={numberInput}
+                                value={this.state.gameTime.startHour}
+                                onChange={
+                                    this.updateGameTime.bind(this, 'startHour')
+                                }
+                            />
+                            <TextField
+                                id="startMin"
+                                type="number"
+                                min="0"
+                                max="59"
+                                placeholder="Start Minute"
+                                style={numberInput}
+                                value={this.state.gameTime.startMinute}
+                                onChange={
+                                    this
+                                    .updateGameTime
+                                    .bind(this, 'startMinute')
+                                }
+                            />
+                        </div>
                     </div>
-                </div>
-                <div style={style}>
-                    <div style={inlineDiv}>
-                        <span>End Time       :</span>
-                        <DatePicker style={{display: 'inline-block'}} hintText="End Date" onChange={this.updateEndDate.bind(this)} value={this.state.gameTime.endDate}/>
-                        <TextField id="endHr" type="number" min="0" max="23" placeholder="End Hour" style={numberInput} value={this.state.gameTime.endHour} onChange={this.updateGameTime.bind(this, 'endHour')}/>
-                        <TextField id="endMin" type="number" min="0" max="59" placeholder="End Minute" style={numberInput} value={this.state.gameTime.endMinute} onChange={this.updateGameTime.bind(this, 'endMinute')}/>
+                    <div style={style}>
+                        <div style={inlineDiv}>
+                            <span>End Time       :</span>
+                            <DatePicker
+                                style={{display: 'inline-block'}}
+                                hintText="End Date"
+                                onChange={this.updateEndDate.bind(this)}
+                                value={this.state.gameTime.endDate}
+                            />
+                            <TextField
+                                id="endHr"
+                                type="number"
+                                min="0"
+                                max="23"
+                                placeholder="End Hour"
+                                style={numberInput}
+                                value={this.state.gameTime.endHour}
+                                onChange={
+                                    this.updateGameTime.bind(this, 'endHour')
+                                }
+                            />
+                            <TextField
+                                id="endMin"
+                                type="number"
+                                min="0"
+                                max="59"
+                                placeholder="End Minute"
+                                style={numberInput}
+                                value={this.state.gameTime.endMinute}
+                                onChange={
+                                    this.updateGameTime.bind(this, 'endMinute')
+                                }
+                            />
+                        </div>
                     </div>
-                </div>
-                <div style={style}>
-                    <Toggle labelPosition="right" label="CodeWars Passport" onToggle={this.toggleLogin.bind(this, 'codewarsPassport')} toggled={this.state.codewarsPassportLogin}/>
-                    <Toggle labelPosition="right" label="Facebook" onToggle={this.toggleLogin.bind(this, 'facebook')} toggled={this.state.facebookLogin}/>
-                </div>
-                <div style={style}>
-                    <RaisedButton label="Submit"  primary={true} onTouchTap={this.submit.bind(this)}/>
-                </div>
-
-                <div style={style}>
-                    <RaisedButton label="Clear Survey and Contest Data"  secondary={true} onTouchTap={this.clearSurveyAndContest.bind(this)}/>
-                </div>
-
-                <Dialog title="Facebook Login Configuration" modal={false} open={this.state.facebookLoginDialog} actions={facebookLoginAction}>
-                    <TextField floatingLabelText="App ID" value={this.state.facebookID} onChange={this.updateLoginConfig.bind(this, 'facebookID')} />
-                    <TextField floatingLabelText="App Secret" value={this.state.facebookSecret} onChange={this.updateLoginConfig.bind(this, 'facebookSecret')} />
-                </Dialog>
-                <Dialog title="CodeWars Passport Login Configuration" modal={false} open={this.state.codewarsPassportDialog} actions={codewarsPassportLoginAction}>
-                    <div>
-                        <TextField floatingLabelText="App ID" value={this.state.codewarsPassportID} onChange={this.updateLoginConfig.bind(this, 'codewarsPassportID')} />
-                        <TextField floatingLabelText="App Secret" value={this.state.codewarsPassportSecret} onChange={this.updateLoginConfig.bind(this, 'codewarsPassportSecret')} />
+                    <div style={style}>
+                        <Toggle
+                            labelPosition="right"
+                            label="CodeWars Passport"
+                            onToggle={
+                                this.toggleLogin.bind(this, 'codewarsPassport')
+                            }
+                            toggled={this.state.codewarsPassportLogin}
+                        />
+                        <Toggle
+                            labelPosition="right"
+                            label="Facebook"
+                            onToggle={this.toggleLogin.bind(this, 'facebook')}
+                            toggled={this.state.facebookLogin}
+                        />
                     </div>
-                    <div>
-                        <TextField floatingLabelText="Base URL" value={this.state.codewarsPassportUrl} onChange={this.updateLoginConfig.bind(this, 'codewarsPassportUrl')} />
+                    <div style={style}>
+                        <RaisedButton
+                            label="Submit"
+                            primary={true}
+                            onTouchTap={this.submit.bind(this)}
+                        />
                     </div>
-                </Dialog>
-            </div>
+                    <div style={style}>
+                        <RaisedButton
+                            label="Clear Survey and Contest Data"
+                            secondary={true}
+                            onTouchTap={this.clearSurveyAndContest.bind(this)}
+                        />
+                    </div>
+                    <Dialog
+                        title="Facebook Login Configuration"
+                        modal={false}
+                        open={this.state.facebookLoginDialog}
+                        actions={facebookLoginAction}
+                    >
+                        <TextField
+                            floatingLabelText="App ID"
+                            value={this.state.facebookID}
+                            onChange={
+                                this.updateLoginConfig.bind(this, 'facebookID')
+                            }
+                        />
+                        <TextField
+                            floatingLabelText="App Secret"
+                            value={this.state.facebookSecret}
+                            onChange={
+                                this
+                                .updateLoginConfig
+                                .bind(this, 'facebookSecret')
+                            }
+                        />
+                    </Dialog>
+                    <Dialog
+                        title="CodeWars Passport Login Configuration"
+                        modal={false}
+                        open={this.state.codewarsPassportDialog}
+                        actions={codewarsPassportLoginAction}
+                    >
+                        <div>
+                            <TextField
+                                floatingLabelText="App ID"
+                                value={this.state.codewarsPassportID}
+                                onChange={
+                                    this
+                                    .updateLoginConfig
+                                    .bind(this, 'codewarsPassportID')
+                                }
+                            />
+                            <TextField
+                                floatingLabelText="App Secret"
+                                value={this.state.codewarsPassportSecret}
+                                onChange={
+                                    this
+                                    .updateLoginConfig
+                                    .bind(this, 'codewarsPassportSecret')
+                                }
+                            />
+                        </div>
+                        <div>
+                            <TextField
+                                floatingLabelText="Base URL"
+                                value={this.state.codewarsPassportUrl}
+                                onChange={
+                                    this
+                                    .updateLoginConfig
+                                    .bind(this, 'codewarsPassportUrl')
+                                }
+                            />
+                        </div>
+                    </Dialog>
+                </div>
+            </MuiThemeProvider>
         );
     }
 }
-
+System.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired
+};
 System.propTypes = {
     _timer: PropTypes.object,
     _sapporo: PropTypes.object

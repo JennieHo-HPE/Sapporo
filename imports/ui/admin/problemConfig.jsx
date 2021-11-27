@@ -4,23 +4,22 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import { problem, language } from '../../api/db.js';
 
-import Toolbar from 'material-ui/lib/toolbar/toolbar';
-import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
-import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import TextField from 'material-ui/lib/text-field';
-import RaisedButton from 'material-ui/lib/raised-button';
-import SelectField from 'material-ui/lib/select-field';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
+import { List, ListItem } from 'material-ui/List';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 
-import ProblemIcon from 'material-ui/lib/svg-icons/editor/insert-comment';
-import LanguageIcon from 'material-ui/lib/svg-icons/action/language';
-import IconButton from 'material-ui/lib/icon-button';
-import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
+import ProblemIcon from 'material-ui/svg-icons/editor/insert-comment';
+import LanguageIcon from 'material-ui/svg-icons/action/language';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
 const workaroundStyle = {marginTop: '30px', borderTop: '1px solid #DDD'};
-
 const addStyle = {
     textAlign: 'center',
     marginTop: '20px'
@@ -48,38 +47,46 @@ const initState = {
     addText : null,
     selectProblem : null
 };
+
 class ProblemConfig extends Component {
     constructor(props) {
         super(props);
         this.state = initState;
     }
+
     componentDidUpdate () {
     }
+
     updateAddScore (event) {
         this.setState({
             addScore: event.target.value
         });
     }
+
     updateAddTitle (event) {
         this.setState({
             addTitle: event.target.value
         });
     }
+
     updateAddIso (event) {
         this.setState({
             addIso: event.target.value
         });
     }
+
     updateAddText (event) {
         this.setState({
             addText: event.target.value
         });
     }
+
     updateLangIso (event, idx, value) {
         this.setState({
             langIso: value
         });
     }
+
     renderProblems () {
         return this.props._problem.map((problem, key) => {
             // This is ugly....should remove this after codewar.
@@ -91,43 +98,65 @@ class ProblemConfig extends Component {
                 tmp.exampleInput = {};
                 tmp.exampleOutput = {};
                 tmp.title[this.props._language[0].iso] = problem.title;
-                tmp.description[this.props._language[0].iso] = problem.description;
-                tmp.exampleInput[this.props._language[0].iso] = problem.exampleInput;
-                tmp.exampleOutput[this.props._language[0].iso] = problem.exampleOutput;
+                tmp.description[this.props._language[0].iso]
+                    = problem.description;
+                tmp.exampleInput[this.props._language[0].iso]
+                    = problem.exampleInput;
+                tmp.exampleOutput[this.props._language[0].iso]
+                    = problem.exampleOutput;
                 Object.assign(problem, tmp);
             }
             let title = problem.title[this.props._language[0].iso];
-            return (<ListItem key={key} primaryText={title} secondaryText={problem.score}
-                    leftIcon={<ProblemIcon />} onTouchTap={this.clickProblem.bind(this, problem)}
-                    style={{borderBottom: '1px solid #DDD'}}/>);
+            return (
+                <ListItem
+                    key={key}
+                    primaryText={title}
+                    secondaryText={problem.score}
+                    leftIcon={<ProblemIcon />}
+                    onTouchTap={this.clickProblem.bind(this, problem)}
+                    style={{borderBottom: '1px solid #DDD'}}
+                />
+            );
         });
     }
+
     renderLangs () {
         return this.props._language.map((lang, key) => (
-            <ListItem key={key} primaryText={lang.text} secondaryText={lang.iso}
-                    leftIcon={<LanguageIcon />} style={{borderBottom: '1px solid #DDD'}}
-                    rightIconButton={
-                        <IconButton touch={true} tooltip="delete" tooltipPosition="bottom-left"
-                            onTouchTap={this.removeLang.bind(this, lang)}>
-                                <DeleteIcon />
-                        </IconButton>
-                    }/>
+            <ListItem
+                key={key}
+                primaryText={lang.text}
+                secondaryText={lang.iso}
+                leftIcon={<LanguageIcon />}
+                style={{borderBottom: '1px solid #DDD'}}
+                rightIconButton={
+                    <IconButton
+                        touch={true}
+                        tooltip="delete"
+                        tooltipPosition="bottom-left"
+                        onTouchTap={this.removeLang.bind(this, lang)}
+                    >
+                            <DeleteIcon />
+                    </IconButton>
+                }
+            />
         ));
     }
+
     clickProblem (problem) {
         this.setState({
             langIso: this.props._language[0].iso,
             selectProblem: problem
         });
     }
+
     addProblem () {
         let problem = {
             title: {},
             description: {},
             exampleInput: {},
             exampleOutput: {},
-            testInput: "",
-            testOutput: "",
+            testInput: '',
+            testOutput: '',
             score: this.state.addScore,
             verfication: [],
             images: []
@@ -136,14 +165,17 @@ class ProblemConfig extends Component {
         Meteor.call('problem.add', problem);
         this.setState(initState);
     }
+
     updateProblem (data) {
         Meteor.call('problem.update', data);
         this.setState(initState);
     }
+
     deleteProblem (data) {
         Meteor.call('problem.delete', data);
         this.setState(initState);
     }
+
     addLang () {
         Meteor.call('language.add', {
             iso: this.state.addIso,
@@ -151,6 +183,7 @@ class ProblemConfig extends Component {
         });
         this.setState(initState);
     }
+
     addDefaultLanguages () {
         const defaultLanguages = [
             {
@@ -172,6 +205,7 @@ class ProblemConfig extends Component {
 
         this.setState(initState);
     }
+
     removeLang (data) {
         Meteor.call('language.delete', data);
         this.setState(initState);
@@ -180,6 +214,7 @@ class ProblemConfig extends Component {
     exitEditor () {
         this.setState(initState);
     }
+
     updateSelected (attr, event) {
         let temp = this.state.selectProblem;
         temp[attr] = event.target.value;
@@ -187,6 +222,7 @@ class ProblemConfig extends Component {
             selectProblem : temp
         });
     }
+
     updateSelectedWithLang (attr, event) {
         let temp = this.state.selectProblem;
         temp[attr][this.state.langIso] = event.target.value;
@@ -194,6 +230,7 @@ class ProblemConfig extends Component {
             selectProblem : temp
         });
     }
+
     addVerificationCase () {
         let selected = this.state.selectProblem;
         selected.verfication.push({
@@ -204,6 +241,7 @@ class ProblemConfig extends Component {
             selectProblem: selected
         });
     }
+
     updateVerificationCase (key, field, event) {
         let selected = this.state.selectProblem;
         selected.verfication[key][field] = event.target.value;
@@ -211,6 +249,7 @@ class ProblemConfig extends Component {
             selectProblem : selected
         });
     }
+
     deleteVerificationCase (key) {
         let selected = this.state.selectProblem;
         selected.verfication.splice(key, 1);
@@ -218,33 +257,74 @@ class ProblemConfig extends Component {
             selectProblem: selected
         });
     }
+
     renderVerification () {
         if (!this.state.selectProblem.verfication) {
             return;
         }
         return this.state.selectProblem.verfication.map((item, key) => (
-            <div style={{marginTop:'20px', borderBottom: '1px solid #DDD'}} key={key}>
-                <TextField type="text" floatingLabelText="Input" value={item.input}  name={key+'input'} multiLine={true} underlineShow={false}
-                           onChange={this.updateVerificationCase.bind(this, key, 'input')} rows={1} rowsMax={1}/>
-                       <TextField type="text" floatingLabelText="Output" value={item.output} name={key+'output'} multiLine={true} underlineShow={false}
-                           onChange={this.updateVerificationCase.bind(this, key, 'output')} rows={1} rowsMax={1}/>
-                <RaisedButton label="Delete" secondary={true} onTouchTap={this.deleteVerificationCase.bind(this, key)}/>
+            <div
+                style={{marginTop:'20px', borderBottom: '1px solid #DDD'}}
+                key={key}
+            >
+                <TextField
+                    type="text"
+                    floatingLabelText="Input"
+                    value={item.input}
+                    name={key+'input'}
+                    multiLine={true}
+                    underlineShow={false}
+                    onChange={
+                        this.updateVerificationCase.bind(this, key, 'input')
+                    }
+                    rows={1}
+                    rowsMax={1}
+                />
+                <TextField
+                    type="text"
+                    floatingLabelText="Output"
+                    value={item.output}
+                    name={key+'output'}
+                    multiLine={true}
+                    underlineShow={false}
+                    onChange={
+                        this.updateVerificationCase.bind(this, key, 'output')
+                    }
+                    rows={1}
+                    rowsMax={1}
+                />
+                <RaisedButton
+                    label="Delete"
+                    secondary={true}
+                    onTouchTap={this.deleteVerificationCase.bind(this, key)}
+                />
             </div>
         ));
     }
+
     renderImages () {
         if (!this.state.selectProblem.images) {
             return;
         }
         return this.state.selectProblem.images.map((item, key) => (
             <div key={key}>
-                <img src={item.content} style={{height: '200px'}}/>
-                <TextField type="text" placeholder="Title" name="title"
-                           value={item.title} onChange={this.updateImageTitle.bind(this, key)}/>
-                <RaisedButton label="Delete" secondary={true} onTouchTap={this.deleteImage.bind(this, key)}/>
+                <img src={item.content} style={{height: '200px'}} />
+                <TextField
+                 type="text"
+                 placeholder="Title"
+                 name="title"
+                value={item.title}
+                onChange={this.updateImageTitle.bind(this, key)}
+                />
+                <RaisedButton
+                    label="Delete"
+                    secondary={true}
+                    onTouchTap={this.deleteImage.bind(this, key)}
+                />
             </div>
         ));
     }
+
     addImage (e) {
         let reader = new FileReader();
         let file = e.target.files;
@@ -260,6 +340,7 @@ class ProblemConfig extends Component {
         };
         reader.readAsDataURL(file[0]);
     }
+
     updateImageTitle (key, event) {
         let selected = this.state.selectProblem;
         selected.images[key].title = event.target.value;
@@ -267,6 +348,7 @@ class ProblemConfig extends Component {
             selectProblem : selected
         });
     }
+
     deleteImage (key) {
         let selected = this.state.selectProblem;
         selected.images.splice(key, 1);
@@ -274,72 +356,226 @@ class ProblemConfig extends Component {
             selectProblem: selected
         });
     }
+
     renderLangOptions () {
-        return this.props._language.map((lang, key) => (<MenuItem key={key} value={lang.iso} primaryText={lang.text}></MenuItem>));
+        return this.props._language.map(
+            (lang, key) => (
+                <MenuItem
+                    key={key}
+                    value={lang.iso}
+                    primaryText={lang.text}
+                />
+            )
+        );
     }
+
     renderEditor () {
         let selected = this.state.selectProblem;
         return (
-            <div style={{position: 'fixed', top:'0', left:'0',backgroundColor: 'rgba(0,0,0,0.7)',
-                width: '100%', height: '100vh', zIndex:'2000'}}>
-                <div style={{position: 'fixed', top:'5vh', left:'5%', width: '85%', height: '85vh', padding:'2.5vh 2.5%',
-                    backgroundColor:'white', zIndex:'2500', overflow:'scroll'}}>
+            <div
+                style={{
+                    position: 'fixed',
+                    top: '0',
+                    left: '0',
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    width: '100%',
+                    height: '100vh',
+                    zIndex: '2000'
+                }}
+            >
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: '5vh',
+                        left: '5%',
+                        width: '85%',
+                        height: '85vh',
+                        padding: '2.5vh 2.5%',
+                        backgroundColor: 'white',
+                        zIndex: '2500',
+                        overflow: 'scroll'
+                    }}
+                >
                     <div>
-                        <SelectField value={this.state.langIso} onChange={this.updateLangIso.bind(this)} floatingLabelText="Language" >
+                        <SelectField
+                            value={this.state.langIso}
+                            onChange={this.updateLangIso.bind(this)}
+                            floatingLabelText="Language"
+                        >
                             {this.renderLangOptions()}
                         </SelectField>
-                        <RaisedButton label="Update" primary={true}   onTouchTap={this.updateProblem.bind(this, selected)}/>
-                        <RaisedButton label="Cancel" onTouchTap={this.exitEditor.bind(this)}/>
-                        <RaisedButton label="Delete" secondary={true} onTouchTap={this.deleteProblem.bind(this, selected)}/>
+                        <RaisedButton
+                            label="Update" primary={true}
+                            onTouchTap={this.updateProblem.bind(this, selected)}
+                        />
+                        <RaisedButton
+                            label="Cancel"
+                            onTouchTap={this.exitEditor.bind(this)}
+                        />
+                        <RaisedButton
+                            label="Delete"
+                            secondary={true}
+                            onTouchTap={this.deleteProblem.bind(this, selected)}
+                        />
                     </div>
                     <div>
-                        <TextField type="number" min="0" placeholder="Score" name="number"
-                                   style={scoreStyle} value={selected.score} onChange={this.updateSelected.bind(this, 'score')}/>
-                        <TextField type="text" placeholder="Title" style={titleStyle} name="title"
-                                   value={selected.title[this.state.langIso]} onChange={this.updateSelectedWithLang.bind(this, 'title')}/>
-
+                        <TextField
+                            type="number"
+                            min="0"
+                            placeholder="Score"
+                            name="number"
+                            style={scoreStyle}
+                            value={selected.score}
+                            onChange={this.updateSelected.bind(this, 'score')}
+                        />
+                        <TextField
+                            type="text"
+                            placeholder="Title"
+                            style={titleStyle}
+                            name="title"
+                            value={selected.title[this.state.langIso]}
+                            onChange={
+                                this.updateSelectedWithLang.bind(this, 'title')
+                            }
+                        />
                     </div>
                     <div>
-                        <TextField type="text" floatingLabelText="Problem Description" multiLine={true}
-                            value={selected.description[this.state.langIso] || ''} name="description"
-                            rows={2} rowsMax={4} underlineShow={false} style={{width: '100%'}} onChange={this.updateSelectedWithLang.bind(this, 'description')}/>
+                        <TextField
+                            type="text"
+                            floatingLabelText="Problem Description"
+                            multiLine={true}
+                            value={
+                                selected.description[this.state.langIso] || ''
+                            }
+                            name="description"
+                            rows={2}
+                            rowsMax={4}
+                            underlineShow={false}
+                            style={{width: '100%'}}
+                            onChange={
+                                this
+                                .updateSelectedWithLang
+                                .bind(this, 'description')
+                            }
+                        />
                     </div>
                     <div style={workaroundStyle}>
-                        <TextField type="text" floatingLabelText="Input Example" multiLine={true}
-                            value={selected.exampleInput[this.state.langIso] || ''} name="exampleInput"
-                                   rows={2} rowsMax={2} underlineShow={false} style={inlineTestfield} onChange={this.updateSelectedWithLang.bind(this, 'exampleInput')}/>
-                        <TextField type="text" floatingLabelText="Output Example" multiLine={true}
-                            value={selected.exampleOutput[this.state.langIso] || ''} name="exampleOutput"
-                            rows={2} rowsMax={2} underlineShow={false} style={inlineTestfield} onChange={this.updateSelectedWithLang.bind(this, 'exampleOutput')}/>
+                        <TextField
+                            type="text"
+                            floatingLabelText="Input Example"
+                            multiLine={true}
+                            value={
+                                selected.exampleInput[this.state.langIso] || ''
+                            }
+                            name="exampleInput"
+                            rows={2}
+                            rowsMax={2}
+                            underlineShow={false}
+                            style={inlineTestfield}
+                            onChange={
+                                this
+                                .updateSelectedWithLang
+                                .bind(this, 'exampleInput')
+                            }
+                        />
+                        <TextField
+                            type="text"
+                            floatingLabelText="Output Example"
+                            multiLine={true}
+                            value={
+                                selected.exampleOutput[this.state.langIso] || ''
+                            }
+                            name="exampleOutput"
+                            rows={2}
+                            rowsMax={2}
+                            underlineShow={false}
+                            style={inlineTestfield}
+                            onChange={
+                                this
+                                .updateSelectedWithLang
+                                .bind(this, 'exampleOutput')
+                            }
+                        />
                     </div>
                     <div style={workaroundStyle}>
-                        <TextField type="text" floatingLabelText="Test Input" style={inlineTestfield} name="testInput" multiLine={true} underlineShow={false}
-                                   value={selected.testInput} onChange={this.updateSelected.bind(this, 'testInput')} rows={1} rowsMax={1}/>
-                        <TextField type="text" floatingLabelText="Test Output" style={inlineTestfield} name="testOutput" multiLine={true} underlineShow={false}
-                                   value={selected.testOutput} onChange={this.updateSelected.bind(this, 'testOutput')} rows={1} rowsMax={1}/>
+                        <TextField
+                            type="text"
+                            floatingLabelText="Test Input"
+                            style={inlineTestfield}
+                            name="testInput"
+                            multiLine={true}
+                            underlineShow={false}
+                            value={selected.testInput}
+                            onChange={
+                                this.updateSelected.bind(this, 'testInput')
+                            }
+                            rows={1}
+                            rowsMax={1}
+                        />
+                        <TextField
+                            type="text"
+                            floatingLabelText="Test Output"
+                            style={inlineTestfield}
+                            name="testOutput"
+                            multiLine={true}
+                            underlineShow={false}
+                            value={selected.testOutput}
+                            onChange={
+                                this.updateSelected.bind(this, 'testOutput')
+                            }
+                            rows={1}
+                            rowsMax={1}
+                        />
                     </div>
                     <div style={workaroundStyle}>
-                        <RaisedButton label="Add another verification" primary={true} onTouchTap={this.addVerificationCase.bind(this)}/>
+                        <RaisedButton
+                            label="Add another verification"
+                            primary={true}
+                            onTouchTap={this.addVerificationCase.bind(this)}
+                        />
                         {this.renderVerification()}
                     </div>
                     <div style={{marginTop:'10px'}}>
-                        <input type="file" onChange={this.addImage.bind(this)}/>
+                        <input
+                            type="file"
+                            onChange={this.addImage.bind(this)}
+                        />
                         {this.renderImages()}
                     </div>
                 </div>
             </div>
         );
     }
+
     renderProblemConfig () {
         if (this.props._language.length > 0) {
             return (
                 <div>
                     <div style={addStyle}>
-                        <TextField type="number" min="0" placeholder="Score" id="score" style={scoreStyle}
-                                   value={this.state.addScore} onChange={this.updateAddScore.bind(this)}/>
-                        <TextField type="text" id="problemName" placeholder={'Title (' + this.props._language[0].text + ')'}
-                                   style={titleStyle} value={this.state.addTitle} onChange={this.updateAddTitle.bind(this)}/>
-                        <RaisedButton label="Add" primary={true} onTouchTap={this.addProblem.bind(this)}/>
+                        <TextField
+                            type="number"
+                            min="0"
+                            placeholder="Score"
+                            id="score"
+                            style={scoreStyle}
+                            value={this.state.addScore}
+                            onChange={this.updateAddScore.bind(this)}
+                        />
+                        <TextField
+                            type="text"
+                            id="problemName"
+                            placeholder={
+                                `Title (${this.props._language[0].text})`
+                            }
+                            style={titleStyle}
+                            value={this.state.addTitle}
+                            onChange={this.updateAddTitle.bind(this)}
+                        />
+                        <RaisedButton
+                            label="Add"
+                            primary={true}
+                            onTouchTap={this.addProblem.bind(this)}
+                        />
                     </div>
                     <List style={listStyle}>
                         {this.renderProblems()}
@@ -351,21 +587,45 @@ class ProblemConfig extends Component {
         else {
             return (
                 <div style={{margin: '20px 10px'}}>
-                    <h3>Please at least add one language to Multi-Language Configuration</h3>
+                    <h3>
+                        Please at least add one language to Multi-Language
+                        Configuration
+                    </h3>
                 </div>
             );
         }
     }
+
     renderLanguageConfig () {
         return (
             <div>
                 <div style={addStyle}>
-                    <TextField type="text" id="langIso" placeholder="en-US" id="score" style={scoreStyle}
-                               value={this.state.addIso} onChange={this.updateAddIso.bind(this)}/>
-                    <TextField type="text" id="langText" placeholder="English" style={titleStyle}
-                               value={this.state.addText} onChange={this.updateAddText.bind(this)}/>
-                    <RaisedButton label="Add" primary={true} onTouchTap={this.addLang.bind(this)}/>
-                    <RaisedButton label="Add defaults" onTouchTap={this.addDefaultLanguages.bind(this)}/>
+                    <TextField
+                        type="text"
+                        id="langIso"
+                        placeholder="en-US"
+                        id="score"
+                        style={scoreStyle}
+                        value={this.state.addIso}
+                        onChange={this.updateAddIso.bind(this)}
+                    />
+                    <TextField
+                        type="text"
+                        id="langText"
+                        placeholder="English"
+                        style={titleStyle}
+                        value={this.state.addText}
+                        onChange={this.updateAddText.bind(this)}
+                    />
+                    <RaisedButton
+                        label="Add"
+                        primary={true}
+                        onTouchTap={this.addLang.bind(this)}
+                    />
+                    <RaisedButton
+                        label="Add defaults"
+                        onTouchTap={this.addDefaultLanguages.bind(this)}
+                    />
                 </div>
                 <List style={listStyle}>
                     {this.renderLangs()}
@@ -373,30 +633,37 @@ class ProblemConfig extends Component {
             </div>
         );
     }
+
     render () {
         return (
-            <div>
+            <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
                 <div>
-                    <Toolbar style={{marginTop:'30px'}}>
-                        <ToolbarGroup float="left">
-                            <ToolbarTitle text="Multi-Language Configuration" />
-                        </ToolbarGroup>
-                    </Toolbar>
-                    {this.renderLanguageConfig()}
+                    <div>
+                        <Toolbar style={{marginTop: '30px'}}>
+                            <ToolbarGroup float="left">
+                                <ToolbarTitle
+                                    text="Multi-Language Configuration"
+                                />
+                            </ToolbarGroup>
+                        </Toolbar>
+                        {this.renderLanguageConfig()}
+                    </div>
+                    <div>
+                        <Toolbar style={{marginTop: '30px'}}>
+                            <ToolbarGroup float="left">
+                                <ToolbarTitle text="Problem Configuration" />
+                            </ToolbarGroup>
+                        </Toolbar>
+                        {this.renderProblemConfig()}
+                    </div>
                 </div>
-                <div>
-                    <Toolbar style={{marginTop:'30px'}}>
-                        <ToolbarGroup float="left">
-                            <ToolbarTitle text="Problem Configuration" />
-                        </ToolbarGroup>
-                    </Toolbar>
-                    {this.renderProblemConfig()}
-                </div>
-            </div>
+            </MuiThemeProvider>
         );
     }
 }
-
+ProblemConfig.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired
+};
 ProblemConfig.propTypes = {
     _problem: PropTypes.array.isRequired,
     _language: PropTypes.array.isRequired

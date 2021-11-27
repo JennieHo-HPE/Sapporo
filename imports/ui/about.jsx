@@ -1,13 +1,13 @@
-import React, { Component, PropTypes } from 'react';
-import { Meteor } from 'meteor/meteor';
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react';
 
-import Paper from 'material-ui/lib/paper';
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import Avatar from 'material-ui/lib/avatar';
-import Subheader from 'material-ui/lib/Subheader';
-import Dialog from 'material-ui/lib/dialog';
+import Paper from 'material-ui/Paper';
+import { List, ListItem } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
+import Subheader from 'material-ui/Subheader';
+import Dialog from 'material-ui/Dialog';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 
 export default class About extends Component {
     constructor(props) {
@@ -54,46 +54,92 @@ export default class About extends Component {
             }]
         };
     }
+
     renderTechStack(){
         return this.state.techStack.map((item, key) => (
-            <ListItem key={key} primaryText={item.name} secondaryText={item.description} onTouchTap={this.clickItem.bind(this, key)}
-                      leftAvatar={<Avatar src={item.avatar} size={45} backgroundColor='white' style={{border:'0px solid white'}}/>}/>
+            <ListItem
+                key={key}
+                primaryText={item.name}
+                secondaryText={item.description}
+                onTouchTap={this.clickItem.bind(this, key)}
+                leftAvatar={
+                    <Avatar
+                        src={item.avatar}
+                        size={45}
+                        backgroundColor="white"
+                        style={{border:'0px solid white'}}
+                    />
+                }
+            />
         ));
     }
+
     toggleDialog(){
         this.setState({
             openDialog: !(this.state.openDialog)
         });
     }
+
     clickItem(key) {
         this.setState({
             clickIndex: key,
             openDialog: true
         });
     }
+
     render () {
         return (
-            <Paper style={{marginTop:'10px'}}>
-                <Subheader>About the system</Subheader>
-                <div style={{width:'96%', marginLeft:'2%', marginBottom:'10px'}}>
-                    <span>
-                        This system is written entirely in JavaScript. JavaScript has become the most popular and fast-growing programming language nowadays.
-                        With the power of JavaScript's ecosystem, we are able to build a modern system for CodeWars 2018.
-                    </span>
-                </div>
-                <List>
-                    <Subheader>We use the following to build our system</Subheader>
-                    {this.renderTechStack()}
-                </List>
-                <Dialog modal={false} autoScrollBodyContent={true} open={this.state.openDialog} onRequestClose={this.toggleDialog.bind(this)}>
+            <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
+                <Paper style={{marginTop:'10px'}}>
+                    <Subheader>About the system</Subheader>
+                    <div style={{
+                        width:'96%', marginLeft:'2%', marginBottom:'10px'
+                    }}>
+                        <span>
+                            This system is written entirely in JavaScript.
+                            JavaScript has become the most popular and
+                            fast-growing programming language nowadays. With the
+                            power of JavaScript's ecosystem, we are able to
+                            build a modern system for CodeWars.
+                        </span>
+                    </div>
+                    <List>
+                        <Subheader>
+                            We use the following to build our system
+                        </Subheader>
+                        {this.renderTechStack()}
+                    </List>
+                    <Dialog
+                        modal={false}
+                        autoScrollBodyContent={true}
+                        open={this.state.openDialog}
+                        onRequestClose={this.toggleDialog.bind(this)}
+                    >
                         <div>
-                            <img src={this.state.techStack[this.state.clickIndex].image} style={{height: '100px'}}/>
+                            <img
+                                src={
+                                    this
+                                    .state
+                                    .techStack[this.state.clickIndex]
+                                    .image
+                                }
+                                style={{height: '100px'}}
+                            />
                         </div>
                         <div style={{marginTop:'10px'}}>
-                            {this.state.techStack[this.state.clickIndex].content}
+                            {
+                                this
+                                .state
+                                .techStack[this.state.clickIndex]
+                                .content
+                            }
                         </div>
-                </Dialog>
-            </Paper>
+                    </Dialog>
+                </Paper>
+            </MuiThemeProvider>
         );
     }
 }
+About.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired
+};

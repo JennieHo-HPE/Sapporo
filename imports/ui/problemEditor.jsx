@@ -2,29 +2,26 @@ import React, { Component, PropTypes} from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import Paper from 'material-ui/lib/paper';
-import TextField from 'material-ui/lib/text-field';
-import SelectField from 'material-ui/lib/select-field';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import RaisedButton from 'material-ui/lib/raised-button';
-import FlatButton from 'material-ui/lib/flat-button';
-import Dialog from 'material-ui/lib/dialog';
-import LinearProgress from 'material-ui/lib/linear-progress';
+import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
+import LinearProgress from 'material-ui/LinearProgress';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 
 import Carousel from 'nuka-carousel';
-
-import brace from 'brace';
 import AceEditor from 'react-ace';
 
-import * as langType from '../library/lang_import.js';
 import * as themeType from '../library/theme_import.js';
 import 'brace/theme/tomorrow_night_blue';
 import { timeDiffSecond } from '../library/timeLib.js';
-
 import { getCurrentUserData,  isUserPassedProblem } from '../library/score_lib.js';
-
 import { language, docker, userData, sapporo } from '../api/db.js';
-
 import {SetInfoErrDialog, SetInfoErrDialogMethods} from './infoErrDialog.jsx';
 
 const textDiv = {
@@ -45,6 +42,7 @@ class ProblemEditor extends Component {
             languageOverride: null
         };
     }
+
     updateCode(code) {
         let tmpObj = JSON.parse(localStorage.getItem(this.props.data._id));
         if (!tmpObj) {
@@ -56,16 +54,19 @@ class ProblemEditor extends Component {
             code: tmpObj.code
         });
     }
+
     updateLang(event, index, value) {
         for (var key in this.props._docker) {
             if (this.props._docker[key].title === value) {
-                let tmpObj = JSON.parse(localStorage.getItem(this.props.data._id));
+                let tmpObj
+                    = JSON.parse(localStorage.getItem(this.props.data._id));
                 if (!tmpObj) {
                     tmpObj = {};
                 }
                 tmpObj.language = value;
                 tmpObj.langType = this.props._docker[key].langType;
-                localStorage.setItem(this.props.data._id, JSON.stringify(tmpObj));
+                localStorage.setItem(
+                    this.props.data._id, JSON.stringify(tmpObj));
                 this.setState({
                     language: value,
                     langType: this.props._docker[key].langType
@@ -73,19 +74,26 @@ class ProblemEditor extends Component {
             }
         }
     }
+
     updateDisplayLang(event, index, value) {
         console.log(`LanguageOverride: ${value}`);
         this.setState({
-            languageOverride: value,
+            languageOverride: value
         });
     }
+
     renderDisplayLangOptions () {
         console.log(this.props._language);
         if (!this.props._language) return;
         return this.props._language.map((lang, key) => (
-            <MenuItem key={key} value={lang.iso} primaryText={lang.text}></MenuItem>
+            <MenuItem
+                key={key}
+                value={lang.iso}
+                primaryText={lang.text}
+            />
         ));
     }
+
     renderLangOptions () {
         if (!this.props._docker) return;
         return this.props._docker
@@ -101,11 +109,13 @@ class ProblemEditor extends Component {
                 />
             ));
     }
+
     updateTheme(event, index, value) {
         this.setState({
             theme: value
         });
     }
+
     renderThemeOptions () {
         let themeList = [];
         for (var key in themeType) {
@@ -114,9 +124,10 @@ class ProblemEditor extends Component {
             }
         }
         return themeList.map((theme, key) => (
-            <MenuItem key={key} value={theme} primaryText={theme}></MenuItem>
+            <MenuItem key={key} value={theme} primaryText={theme} />
         ));
     }
+
     updatePageData () {
         let tmpObj = localStorage.getItem(this.props.data._id);
         if (tmpObj) {
@@ -144,19 +155,23 @@ class ProblemEditor extends Component {
             updateLock: true
         });
     }
+
     componentWillMount () {
         SetInfoErrDialogMethods(this);
     }
+
     componentDidMount () {
         this.setState({
             updateLock: false
         });
     }
+
     componentDidUpdate () {
         if (!this.state.updateLock) {
             this.updatePageData();
         }
     }
+
     componentWillUpdate (nextProp) {
         if (nextProp.data._id !== this.props.data._id) {
             this.setState({
@@ -164,6 +179,7 @@ class ProblemEditor extends Component {
             });
         }
     }
+
     submitCode (isTest) {
         let tmpObj = JSON.parse(localStorage.getItem(this.props.data._id));
         if (!isTest) {
@@ -183,7 +199,12 @@ class ProblemEditor extends Component {
         }
 
         let now = new Date();
-        if ((isTest || !tmpObj.passTest) && this.state.lastSubmitTime && (timeDiffSecond(this.state.lastSubmitTime, now) < this.props._sapporo.submitwait) ) {
+        if (
+            (isTest || !tmpObj.passTest)
+            && this.state.lastSubmitTime
+            && (timeDiffSecond(this.state.lastSubmitTime, now)
+                < this.props._sapporo.submitwait)
+        ) {
             this.showErr(`Please wait at least ${this.props._sapporo.submitwait} seconds between each submission. Last submission was ${timeDiffSecond(this.state.lastSubmitTime, now)} seconds ago.`);
             return;
         } else {
@@ -205,19 +226,24 @@ class ProblemEditor extends Component {
                 if (result.pass) {
                     this.closeDialog();
                     if (isTest) {
-                        let tmpObj = JSON.parse(localStorage.getItem(this.props.data._id));
+                        let tmpObj = JSON.parse(
+                            localStorage.getItem(this.props.data._id));
                         tmpObj.passTest = true;
-                        localStorage.setItem(this.props.data._id, JSON.stringify(tmpObj));
+                        localStorage.setItem(
+                            this.props.data._id, JSON.stringify(tmpObj));
                         this.showInfo('You\'ve passed testing. You can now submit your code.');
                     } else {
-                        this.showInfo('Your submission is correct! Congrats :D');
+                        this.showInfo(
+                            'Your submission is correct! Congrats :D');
                     }
                 } else {
                     // No matter it's a test or a submission, always set the
                     // pass fail.
-                    let tmpObj = JSON.parse(localStorage.getItem(this.props.data._id));
+                    let tmpObj
+                        = JSON.parse(localStorage.getItem(this.props.data._id));
                     tmpObj.passTest = false;
-                    localStorage.setItem(this.props.data._id, JSON.stringify(tmpObj));
+                    localStorage.setItem(
+                        this.props.data._id, JSON.stringify(tmpObj));
                     if (isTest) {
                         this.setState({testResult:result});
                     } else {
@@ -227,47 +253,58 @@ class ProblemEditor extends Component {
                 }
             } else {
                 this.closeDialog();
-                if( err.error && (err.error === 503) ){
+                if(err.error && (err.error === 503)) {
                     this.showErr(err.reason);
-                } else{
-                    this.showErr("[" + err.error + "] " + err.reason);
+                }
+                else {
+                    this.showErr(`[${err.error}] ${err.reason}`);
                 }
 
             }
         });
-
     }
+
     closeDialog() {
         this.setState({runCode: false, testResult: null});
     }
+
     renderImages () {
         if (!this.props.data.images) {
             return;
         }
         return this.props.data.images.map((item, key) => (
             <div key={key}>
-                <span style={{textAlign:'center', width:'100%'}}>{item.title}</span>
-                <img  src={item.content} style={{width:'100%', opacity:'0.9'}}/>
+                <span style={{textAlign:'center', width:'100%'}}>
+                    {item.title}
+                </span>
+                <img
+                    src={item.content}
+                    style={{width: '100%', opacity: '0.9'}}
+                />
             </div>
         ));
     }
+
     alreadyPass () {
-        let currentUser = getCurrentUserData(Meteor.user()._id, this.props._userData);
+        let currentUser
+            = getCurrentUserData(Meteor.user()._id, this.props._userData);
         if (isUserPassedProblem(currentUser, this.props.data._id)) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
+
     render () {
         let currentUser = getCurrentUserData(Meteor.user()._id, this.props._userData);
         const editorOption = {
             $blockScrolling: true
         };
-        const actions = [
-            <FlatButton label="Exit" secondary={true} onTouchTap={this.closeDialog.bind(this)}/>
-        ];
-        const langIso = this.state.languageOverride || currentUser.language || (this.props._language.length > 0 ? this.props._language[0].iso : null);
+        const langIso = this.state.languageOverride
+            || currentUser.language
+            || (this.props._language.length > 0 ?
+                this.props._language[0].iso : null);
 
         if (!langIso) {
             return;
@@ -286,107 +323,263 @@ class ProblemEditor extends Component {
             Object.assign(this.props.data, tmp);
         }
         return (
-            <div>
-                {SetInfoErrDialog(this)}
-                {this.alreadyPass()?
-                    <Paper style={{width:'100%', textAlign:'center'}}>
-                        <h3 style={{color:'green'}}>You've Solved This Problem!</h3>
-                    </Paper>
-                    :''
-                }
-                <div style={{display:'inline-block', width: '100%', padding:'10px 0'}} >
-                    <Paper style={{width: '49.5%', float:'left'}} zDepth={1}>
-                        <div style={textDiv}>
-                            <TextField  floatingLabelText="Title" type="text" style={{width: '70%'}}
-                                        value={this.props.data.title[langIso]}/>
-                            <SelectField value={this.state.languageOverride}
-                                         onChange={this.updateDisplayLang.bind(this)}
-                                         floatingLabelText="Language" style={{width: '20%'}}>
-                                 {this.renderDisplayLangOptions()}
-                            </SelectField>
-                            <TextField  floatingLabelText="Score" type="text" style={{width: '5%'}}
-                                        value={this.props.data.score}/>
-                        </div>
-                        <div style={textDiv}>
-                            <TextField floatingLabelText="Description" type="text" style={{width: '100%'}}
-                                       multiLine={true} rows={2} value={this.props.data.description[langIso]}/>
-                        </div>
-                        <div style={textDiv}>
-                            <TextField floatingLabelText="Input Example" type="text" multiLine={true} rows={2} style={{width:'100%'}} value={this.props.data.exampleInput[langIso]}/>
-                        </div>
-                        <div style={textDiv}>
-                            <TextField floatingLabelText="Output Example" type="text" multiLine={true} rows={2} style={{width:'100%'}} value={this.props.data.exampleOutput[langIso]}/>
-                        </div>
-                        {
-                            (this.props.data.images.length > 0)?
-                            <Carousel showArrows={true} framePadding={'10px'}>
-                                {this.renderImages()}
-                            </Carousel>
-                            :''
-                        }
-
-
-                    </Paper>
-                    <div style={{width: '49.5%', float:'right'}}>
-                        <div>
-                            <div style={{width:'50%', display:'inline-block'}}>
-                                <SelectField value={this.state.language} onChange={this.updateLang.bind(this)} floatingLabelText="Language" >
-                                             {this.renderLangOptions()}
+            <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
+                <div>
+                    {SetInfoErrDialog(this)}
+                    {
+                        this.alreadyPass() ?
+                            <Paper style={{width: '100%', textAlign: 'center'}}>
+                                <h3 style={{color: 'green'}}>
+                                    You've Solved This Problem!
+                                </h3>
+                            </Paper>
+                            : ''
+                    }
+                    <div
+                        style={{
+                            display: 'inline-block',
+                            width: '100%',
+                            padding: '10px 0'
+                        }}
+                    >
+                        <Paper
+                            style={{width: '49.5%', float: 'left'}}
+                            zDepth={1}
+                        >
+                            <div style={textDiv}>
+                                <TextField
+                                    floatingLabelText="Title"
+                                    type="text"
+                                    style={{width: '70%'}}
+                                    value={this.props.data.title[langIso]}
+                                />
+                                <SelectField
+                                    value={this.state.languageOverride}
+                                    onChange={this.updateDisplayLang.bind(this)}
+                                    floatingLabelText="Language"
+                                    style={{width: '20%'}}
+                                >
+                                    {this.renderDisplayLangOptions()}
                                 </SelectField>
+                                <TextField
+                                    floatingLabelText="Score"
+                                    type="text"
+                                    style={{width: '5%'}}
+                                    value={this.props.data.score}
+                                />
+                            </div>
+                            <div style={textDiv}>
+                                <TextField
+                                    floatingLabelText="Description"
+                                    type="text"
+                                    style={{width: '100%'}}
+                                    multiLine={true}
+                                    rows={2}
+                                    value={this.props.data.description[langIso]}
+                                />
+                            </div>
+                            <div style={textDiv}>
+                                <TextField
+                                    floatingLabelText="Input Example"
+                                    type="text"
+                                    multiLine={true}
+                                    rows={2}
+                                    style={{width: '100%'}}
+                                    value={
+                                        this
+                                        .props
+                                        .data
+                                        .exampleInput[langIso]
+                                    }
+                                />
+                            </div>
+                            <div style={textDiv}>
+                                <TextField
+                                    floatingLabelText="Output Example"
+                                    type="text"
+                                    multiLine={true}
+                                    rows={2}
+                                    style={{width:'100%'}}
+                                    value={
+                                        this.props.data.exampleOutput[langIso]
+                                    }
+                                />
                             </div>
                             {
-                                this.alreadyPass()?
-                                '':
-                                <div style={{display:'inline-block', float:'right'}}>
-                                    <RaisedButton label="Test before submit"    primary={true} onTouchTap={this.submitCode.bind(this, true)}/>
-                                    <RaisedButton label="Submit"  secondary={true} onTouchTap={this.submitCode.bind(this, false)} style={{marginLeft: '5px'}}/>
-                                </div>
+                                (this.props.data.images.length > 0) ?
+                                    <Carousel
+                                        showArrows={true}
+                                        framePadding={'10px'}
+                                    >
+                                        {this.renderImages()}
+                                    </Carousel>
+                                    : ''
                             }
-
+                        </Paper>
+                        <div style={{width: '49.5%', float:'right'}}>
+                            <div>
+                                <div
+                                    style={{
+                                        width:'50%',
+                                        display:'inline-block'
+                                    }}
+                                >
+                                    <SelectField
+                                        value={this.state.language}
+                                        onChange={this.updateLang.bind(this)}
+                                        floatingLabelText="Language"
+                                    >
+                                        {this.renderLangOptions()}
+                                    </SelectField>
+                                </div>
+                                {
+                                    this.alreadyPass() ? '' :
+                                        <div
+                                            style={{
+                                                display:'inline-block',
+                                                float:'right'
+                                            }}
+                                        >
+                                            <RaisedButton
+                                                label="Test before submit"
+                                                primary={true}
+                                                onTouchTap={
+                                                    this
+                                                    .submitCode
+                                                    .bind(this, true)
+                                                }
+                                            />
+                                            <RaisedButton
+                                                label="Submit"
+                                                secondary={true}
+                                                onTouchTap={
+                                                    this
+                                                    .submitCode
+                                                    .bind(this, false)
+                                                }
+                                                style={{marginLeft: '5px'}}
+                                            />
+                                        </div>
+                                }
+                            </div>
+                            {
+                                this.state.langType ?
+                                    <AceEditor
+                                        mode={this.state.langType}
+                                        theme={this.state.theme}
+                                        onChange={this.updateCode.bind(this)}
+                                        value={this.state.code}
+                                        width='100%'
+                                        name="UNIQUE_ID_OF_DIV"
+                                        editorProps={editorOption}
+                                        height="700px"
+                                    /> :
+                                    <span>Choose a language to start</span>
+                            }
                         </div>
-                        {
-                            this.state.langType?
-                            <AceEditor mode={this.state.langType} theme={this.state.theme} onChange={this.updateCode.bind(this)} value={this.state.code} width='100%'
-                                       name="UNIQUE_ID_OF_DIV" editorProps={editorOption} height="700px"></AceEditor>
-                                   :<span>Choose a language to start</span>
-                        }
-
                     </div>
+                    <Dialog
+                        title=" "
+                        modal={false}
+                        autoScrollBodyContent={true}
+                        contentStyle={{
+                            width: '90%',
+                            maxWidth: '100%',
+                            height: '95vh'
+                        }}
+                        open={this.state.runCode}
+                        autoDetectWindowHeight={false}
+                    >
+                        {
+                            this.state.testResult ?
+                                <div>
+                                    <span style={{color: 'red'}}>
+                                        Not correct
+                                    </span>
+                                    <TextField
+                                        floatingLabelText="Test Input"
+                                        type="text"
+                                        style={{width: '100%'}}
+                                        multiLine={true}
+                                        value={this.state.testResult.testInput}
+                                    />
+                                    <div style={{width: '100%', color: 'red'}}>
+                                        {
+                                            !this.state.testResult.stdout ?
+                                                <span>
+                                                    No test result.
+                                                    Maybe execution time exceeds
+                                                    the limitation?
+                                                </span> : ''
+                                        }
+                                    </div>
+                                    <div style={{width: '100%'}}>
+                                        <div
+                                            style={{
+                                                width: '48%',
+                                                float: 'left'
+                                            }}
+                                        >
+                                            <TextField
+                                                floatingLabelText="My Output"
+                                                type="text"
+                                                style={{width: '100%'}}
+                                                value={
+                                                    this.state.testResult.stdout
+                                                }
+                                                multiLine={true}
+                                            />
+                                        </div>
+                                        <div
+                                            style={{
+                                                width: '48%',
+                                                float: 'right'
+                                            }}
+                                        >
+                                            <TextField
+                                                floatingLabelText="Expected Output"
+                                                type="text"
+                                                style={{width: '100%'}}
+                                                value={
+                                                    this
+                                                    .state
+                                                    .testResult
+                                                    .expected
+                                                }
+                                                multiLine={true}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div
+                                        style={{
+                                            width: '100%',
+                                            float: 'left'
+                                        }}
+                                    >
+                                        <FlatButton
+                                            label="Exit"
+                                            secondary={true}
+                                            onTouchTap={
+                                                this.closeDialog.bind(this)
+                                            }
+                                            style={{
+                                                left: '50%',
+                                                marginLeft: '-50px'
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                                : <LinearProgress mode="indeterminate"/>
+                        }
+                    </Dialog>
                 </div>
-
-                <Dialog title=" " modal={false} autoScrollBodyContent={true} contentStyle={{width:'90%', maxWidth:'100%', height: '95vh'}}
-                        open={this.state.runCode} autoDetectWindowHeight={false}>
-                    {this.state.testResult?
-                        <div>
-                            <span style={{color:'red'}}>Not correct</span>
-                            <TextField floatingLabelText="Test Input" type="text" style={{width:'100%'}} multiLine={true}
-                                       value={this.state.testResult.testInput}/>
-                            <div style={{width: '100%', color:'red'}}>
-                                {(!(this.state.testResult.stdout))? <span>No test result. Maybe execution time exceeds the limitation?</span>:''}
-                            </div>
-                            <div style={{width:'100%'}}>
-                                <div style={{width:'48%',float:'left'}}>
-                                    <TextField  floatingLabelText="My Output" type="text" style={{width: '100%'}}
-                                                value={this.state.testResult.stdout} multiLine={true} />
-                                </div>
-                                <div style={{width:'48%', float:'right'}}>
-                                    <TextField  floatingLabelText="Expected Output" type="text" style={{width: '100%'}}
-                                                value={this.state.testResult.expected} multiLine={true} />
-                                </div>
-                            </div>
-                            <div style={{width:'100%', float:'left'}}>
-                                <FlatButton label="Exit" secondary={true} onTouchTap={this.closeDialog.bind(this)} style={{left:'50%', marginLeft:'-50px'}}/>
-                            </div>
-                        </div>
-                        :  <LinearProgress mode="indeterminate"/>
-                    }
-                </Dialog>
-            </div>
+            </MuiThemeProvider>
         );
     }
 }
-
-
+ProblemEditor.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired
+};
 ProblemEditor.propTypes = {
     _docker: PropTypes.array.isRequired,
     _userData: PropTypes.array.isRequired,

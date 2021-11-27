@@ -14,37 +14,46 @@ const timerStyle = {
 };
 
 class Timer extends Component {
-
     display () {
         if (this.props._timer) {
-            let schedule = timeSchedule(this.props._timer.systemTime, this.props._timer.start, this.props._timer.end);
+            let schedule = timeSchedule(
+                this.props._timer.systemTime,
+                this.props._timer.start,
+                this.props._timer.end
+            );
             if (schedule) {
                 if (schedule.start && schedule.end) {
-                    return <span>End</span>;
-                } else {
-                    let hr = Math.floor(schedule.time.min/60);
+                    return <span>Contest Ended</span>;
+                }
+                else {
+                    let hr = Math.floor(schedule.time.min / 60);
                     let min = schedule.time.min % 60;
                     if (schedule.start) {
                         return (
-                                <div>
-                                    Game On!<br/>
-                                    <span style={{fontWeight: '400'}}>⏲️</span> {`${hr}hr ${min}m ${schedule.time.sec}s`}
-                                </div>
+                            <div>
+                                Contest Started!<br />
+                                <span style={{fontWeight: '400'}}>⏲️</span>
+                                &nbsp;
+                                {`${hr}hr ${min}m ${schedule.time.sec}s`}
+                            </div>
                         );
-                    } else {
+                    }
+                    else {
                         return (
-                                <span>
-                                    Game Will Start in<br/>
-                                    {`${hr}hr ${min}m ${schedule.time.sec}s`}
-                                </span>
+                            <span>
+                                Contest Will Begin in<br />
+                                {`${hr}hr ${min}m ${schedule.time.sec}s`}
+                            </span>
                         );
                     }
                 }
-            } else {
+            }
+            else {
                 return <span>No Config</span>;
             }
         }
     }
+
     render () {
         return (
             <div style={timerStyle}>
@@ -53,7 +62,6 @@ class Timer extends Component {
         );
     }
 }
-
 Timer.propTypes = {
     _timer: PropTypes.object
 };

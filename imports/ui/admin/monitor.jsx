@@ -2,15 +2,22 @@ import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip
+} from 'recharts';
+import { List, ListItem } from 'material-ui/List';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 
 import { timer, requestLogs } from '../../api/db.js';
 import { minutesAfterGameStart } from '../../library/timeLib.js';
 import { logReason } from '../../library/logger.js';
-
 
 class Monitor extends Component {
     constructor(props) {
@@ -19,10 +26,15 @@ class Monitor extends Component {
             logs: []
         };
     }
+
     refactorLogs (logs) {
         if (logs && (logs.length)) {
             return logs.filter((log)=>{
-                let minutes = minutesAfterGameStart(this.props._timer.start, this.props._timer.end, log.createdAt);
+                let minutes = minutesAfterGameStart(
+                    this.props._timer.start,
+                    this.props._timer.end,
+                    log.createdAt
+                );
                 if (minutes) {
                     log.minutes = minutes;
                     return log;
@@ -32,6 +44,7 @@ class Monitor extends Component {
             return [];
         }
     }
+
     refactorLogsForAreaChart () {
         let tmp = {};
         let result = [];
@@ -53,17 +66,27 @@ class Monitor extends Component {
         //console.log(result);
         return result;
     }
+
     clickErrorLog (data) {
         console.log(data);
     }
+
     displayErrorLog () {
         return this.state.logs.map((log, key)=>{
-            if ((log.type !== logReason.success && log.type !== logReason.reachMaxmimum)) {
-                return (<ListItem key={key} primaryText={log.type} secondaryText={log.minutes}
-                                  onTouchTap={this.clickErrorLog.bind(this, log.data)}></ListItem>);
+            if ((log.type !== logReason.success
+                    && log.type !== logReason.reachMaxmimum)) {
+                return (
+                    <ListItem
+                        key={key}
+                        primaryText={log.type}
+                        secondaryText={log.minutes}
+                        onTouchTap={this.clickErrorLog.bind(this, log.data)}
+                    />
+                );
             }
         });
     }
+
     renderArea () {
         return Object.keys(logReason).map((item, key)=> {
             let color = '#FFFFFF';
@@ -80,26 +103,42 @@ class Monitor extends Component {
             }
 
             return (
-                <Area key={key} isAnimationActive={false} type='monotone' dataKey={item} stackId="1" stroke={color} fill={color} />
+                <Area
+                    key={key}
+                    isAnimationActive={false}
+                    type='monotone'
+                    dataKey={item}
+                    stackId="1"
+                    stroke={color}
+                    fill={color}
+                />
             );
         });
     }
+
     renderAreaChart () {
         return (
-            <AreaChart width={window.innerWidth} height={400} data={this.refactorLogsForAreaChart()} margin={{top: 50, right: 30, left: 0, bottom: 30}} >
-                <XAxis dataKey="minutes"/>
-                <YAxis/>
-                <CartesianGrid strokeDasharray="3 3"/>
+            <AreaChart
+                width={window.innerWidth}
+                height={400}
+                data={this.refactorLogsForAreaChart()}
+                margin={{top: 50, right: 30, left: 0, bottom: 30}}
+            >
+                <XAxis dataKey="minutes" />
+                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" />
                 <Tooltip isAnimationActive={false} />
                 {this.renderArea()}
             </AreaChart>
         );
     }
+
     componentDidUpdate () {
     }
-    componentDidMount () {
 
+    componentDidMount () {
     }
+
     componentWillUpdate (nextProp) {
         let log = this.refactorLogs(nextProp._requestLogs);
         if (log.length !== this.state.logs.length) {
@@ -108,19 +147,24 @@ class Monitor extends Component {
             });
         }
     }
+
     render () {
         return (
-            <div>
-                {this.renderAreaChart()}
-                <span>Issues (click to console.log() error object):</span>
-                <List>
-                    {this.displayErrorLog()}
-                </List>
-            </div>
+            <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
+                <div>
+                    {this.renderAreaChart()}
+                    <span>Issues (click to console.log() error object):</span>
+                    <List>
+                        {this.displayErrorLog()}
+                    </List>
+                </div>
+            </MuiThemeProvider>
         );
     }
 }
-
+Monitor.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired
+};
 Monitor.propTypes = {
     _requestLogs: PropTypes.array.isRequired,
     _timer: PropTypes.object
