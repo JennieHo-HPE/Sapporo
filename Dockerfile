@@ -10,14 +10,19 @@ RUN curl -sk https://install.meteor.com/?release=1.4.2.7 | sh
 RUN mkdir /source
 WORKDIR /source
 
-# Copy over project content
-COPY . .
-
-# Install frontend dependencies, run the meteor build, and populate the
-# server-side runtime...
+# Copy over `package.json' and install frontend deppendencies...
+COPY package.json .
 RUN meteor npm install && \
-    meteor npm cache clean --force && \
-    mkdir /output && \
+    meteor npm cache clean --force
+
+# Copy over EVERYTHING BUT `package.json', run the meteor build, and populate
+# the server-side runtime...
+COPY .meteor ./.meteor/
+COPY client ./client/
+COPY imports ./imports/
+COPY public ./public/
+COPY server ./server/
+RUN mkdir /output && \
     NODE_TLS_REJECT_UNAUTHORIZED=0 \
     meteor build /output --directory && \
     cd /output/bundle/programs/server && \
