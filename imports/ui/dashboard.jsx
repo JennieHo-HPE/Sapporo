@@ -3,29 +3,35 @@ import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import { render } from 'react-dom';
 
+import { GridList, GridTile } from 'material-ui/GridList';
+import { List, ListItem } from 'material-ui/List';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+
+import AccountIcon from 'material-ui/svg-icons/action/account-circle';
+import MessageIcon from 'material-ui/svg-icons/communication/mail-outline';
+import ClockIcon from 'material-ui/svg-icons/device/access-time';
+import TotalIcon from 'material-ui/svg-icons/toggle/star-half';
+import PassIcon from 'material-ui/svg-icons/navigation/check';
+import AboutIcon from 'material-ui/svg-icons/action/code';
+import MailIcon from 'material-ui/svg-icons/content/mail';
+import ReadIcon from 'material-ui/svg-icons/content/drafts';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+
 import About from './about.jsx';
-
 import Timer from './Timer.jsx';
-
-import GridList from 'material-ui/lib/grid-list/grid-list';
-import GridTile from 'material-ui/lib/grid-list/grid-tile';
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import Dialog from 'material-ui/lib/dialog';
-import FlatButton from 'material-ui/lib/flat-button';
-import AccountIcon from 'material-ui/lib/svg-icons/action/account-circle';
-//import HelpIcon from 'material-ui/lib/svg-icons/action/help-outline';
-import MessageIcon from 'material-ui/lib/svg-icons/communication/mail-outline';
-import ClockIcon from 'material-ui/lib/svg-icons/device/access-time';
-import TotalIcon from 'material-ui/lib/svg-icons/toggle/star-half';
-import PassIcon from 'material-ui/lib/svg-icons/navigation/check';
-//import OnlineIcon from 'material-ui/lib/svg-icons/action/question-answer';
-import AboutIcon from 'material-ui/lib/svg-icons/action/code';
-import IconButton from 'material-ui/lib/icon-button';
-
 import { problem, userData, liveFeed, timer, language } from '../api/db.js';
-import { getTotalScore, getUserTotalScore, getCurrentUserData, getUserPassedProblem } from '../library/score_lib.js';
-import { setMailAsRead } from '../library/mail.js';
+import {
+    getTotalScore,
+    getUserTotalScore,
+    getCurrentUserData,
+    getUserPassedProblem
+} from '../library/score_lib.js';
+import { setMailAsRead, isMailRead } from '../library/mail.js';
 
 const styles = {
     gridList: {
@@ -77,6 +83,7 @@ class Dashboard extends Component {
             clickFeed: null
         };
     }
+
     tileStyle(tile) {
         return {
             backgroundImage:
@@ -92,9 +99,11 @@ class Dashboard extends Component {
                 tile.backgroundSize
         };
     }
+
     getScoreTile () {
         if (!this.props._problem || !Meteor.user()) return;
-        let userData = getCurrentUserData(Meteor.user()._id, this.props._userData);
+        let userData
+            = getCurrentUserData(Meteor.user()._id, this.props._userData);
         let score = getUserTotalScore(userData, this.props._problem);
         let totalScore = getTotalScore(this.props._problem);
         return (
@@ -110,12 +119,14 @@ class Dashboard extends Component {
             </div>
         );
     }
+
     getLegalLinks() {
         return (
             <div
                style={{
                    ...tileStyleOuter,
                    fontSize: '1.875rem',
+                   textShadow: '.1em .1em .1em #212121',
                    textAlign: 'left'
                }}
            >
@@ -174,22 +185,30 @@ class Dashboard extends Component {
            </div>
         );
     }
+
     liveFeedLogs () {
         return this.props._liveFeed.map((item, key) => (
             <ListItem
                 key={key}
+                className="inbox-msg"
                 style={{
-                    backgroundColor: 'rgba(128,203,196,0.8)',
+                    backgroundColor: 'rgba(128, 216, 255,0.8)',
                     width: '98%',
                     margin: '0 1% .4em 1%',
                     boxShadow: '.1em .1em .2em #004D40'
                 }}
+                innerDivStyle={{
+                    paddingRight: '1em',
+                    paddingLeft: '3.375em'
+                }}
                 primaryText={item.title}
                 secondaryText={item.date_created.toLocaleString()}
                 onTouchTap={this.openFeed.bind(this, item)}
+                leftIcon={isMailRead(item) ? <ReadIcon /> : <MailIcon />}
             />
         ));
     }
+
     getLiveFeedTile () {
         return (
             <div
@@ -204,10 +223,12 @@ class Dashboard extends Component {
             </div>
         );
     }
+
     getPassProblemTile () {
         if (!this.props._problem || !Meteor.user()) return;
         let totalProblem = this.props._problem.length;
-        let userData = getCurrentUserData(Meteor.user()._id, this.props._userData);
+        let userData
+            = getCurrentUserData(Meteor.user()._id, this.props._userData);
         let passProblem = getUserPassedProblem(userData, this.props._problem);
         return (
             <div
@@ -222,18 +243,20 @@ class Dashboard extends Component {
             </div>
         );
     }
-    createUserManualCb() {
-        let currentUser = getCurrentUserData(Meteor.user()._id, this.props._userData);
-        ////let defaultLang = currentUser.language || (this.props._language[0]? this.props._language[0].iso : null);
 
+    createUserManualCb() {
+        ////let currentUser = getCurrentUserData(Meteor.user()._id, this.props._userData);
+        ////let defaultLang = currentUser.language || (this.props._language[0]? this.props._language[0].iso : null);
         return function () {
             window.open('https://hpcodewars.com.tw/user-guides', 'popUpWindow');
         };
     }
+
     getContent (tile) {
         let contentStyle = {
             height: 'inherit',
-            backgroundColor: tile.backgroundColor? tile.backgroundColor:'rgba(255,255,255,0.3)'
+            backgroundColor: tile.backgroundColor ?
+                tile.backgroundColor: 'rgba(255,255,255,0.3)'
         };
         return (
             <div style={contentStyle}>
@@ -241,6 +264,7 @@ class Dashboard extends Component {
             </div>
         );
     }
+
     openFeed (item) {
         this.setState({
             dialogOpen: true,
@@ -248,12 +272,14 @@ class Dashboard extends Component {
         });
         setMailAsRead(item);
     }
-    textContent (text, fontSize) {
+
+    textContent (text, style) {
         return (
             <div
                 style={{
                     ...tileStyleOuter,
-                    fontSize: !fontSize ? '1.875rem' : fontSize
+                    fontSize: '1.875rem',
+                    ...style
                 }}
             >
                 <div
@@ -263,15 +289,18 @@ class Dashboard extends Component {
             </div>
         );
     }
+
     closeFeed () {
         this.setState({
             dialogOpen: false,
             clickFeed: null
         });
     }
+
     renderAbout(){
         render(<About />, document.getElementById('section'));
     }
+
     render () {
         const tilesData = [
             {
@@ -291,8 +320,9 @@ class Dashboard extends Component {
                 backgroundPosition: '0 20%',
                 icon: <IconButton><AccountIcon color="white" /></IconButton>,
                 content: this.textContent(
-                    'Hello! <span style="font-size: 1.4em">☺</span><br>Welcome \
-                    to CodeWars Competition System'
+                    'Hello! <span style="font-size: 1.4em">☺</span><br>'
+                    + 'Welcome to CodeWars Programming Contest',
+                    {textShadow: '.1em .1em .1em #212121'}
                 )
             },
             {
@@ -336,7 +366,9 @@ class Dashboard extends Component {
                 icon: <IconButton><AboutIcon color="white" /></IconButton>,
                 click: this.createUserManualCb(),
                 content: this.textContent(
-                    '<span style="font-weight: 400">📖</span>', '4.5rem')
+                    '<span style="font-weight: 400">📖</span>',
+                    {fontSize: '4.5rem'}
+                )
             },
             {
                 title: 'About',
@@ -347,7 +379,10 @@ class Dashboard extends Component {
                 icon: <IconButton><AboutIcon color="white" /></IconButton>,
                 image: '/images/coders.jpg',
                 class: 'hoverItem',
-                content: this.textContent('CodeWars System Ver. 2.1'),
+                content: this.textContent(
+                    'CodeWars System 2021',
+                    {textShadow: '.1em .1em .1em #212121'}
+                ),
                 click: this.renderAbout
             },
             {
@@ -358,53 +393,89 @@ class Dashboard extends Component {
                 backgroundPosition: '100% 25%',
                 icon: <IconButton><AboutIcon color="white" /></IconButton>,
                 image: '/images/coders.jpg',
-                cclass:'hoverItem',
                 content: this.getLegalLinks()
             }
         ];
         const actions = [
-            <FlatButton label="exit" primary={true} onTouchTap={this.closeFeed.bind(this)} />
+            <FlatButton
+                label="exit"
+                primary={true}
+                onTouchTap={this.closeFeed.bind(this)}
+            />
         ];
         return (
-            <div>
-                <GridList cols={6} cellHeight={cellHeight()} padding={5} style={styles.gridList}>
-                          {tilesData.map((tile, key) => (
-                    <GridTile key={key} title={tile.title}
-                              onTouchTap={tile.click}
-                              className={tile.class?tile.class:''}
-                              actionIcon={tile.icon}
-                              actionPosition="left" titlePosition="bottom"
-                              titleBackground={tile.titleBG?tile.titleBG:'rgba(0, 0, 0, 0.6)'} children={this.getContent(tile)}
-                              cols={tile.cols} rows={tile.rows? tile.rows:1} style={this.tileStyle(tile)}>
-                    </GridTile>
-                  ))}
-                </GridList>
-                {
-                    this.state.clickFeed ?
-                        <Dialog
-                            title={this.state.clickFeed.title}
-                            actions={actions}
-                            modal={false}
-                            open={this.state.dialogOpen}
-                            onRequestClose={this.closeFeed.bind(this)}
-                        >
-                            <h5>
-                                {this.state.clickFeed.date_created
-                                    .toLocaleString()}
-                            </h5>
-                            <textArea
-                                value={this.state.clickFeed.content}
-                                style={{width:'100%', height:'200px', maxHeight:'200px', border:'none'}}
-                                readOnly={true}
+            <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
+                <div>
+                    <GridList
+                        cols={6}
+                        cellHeight={cellHeight()}
+                        padding={5}
+                        style={styles.gridList}
+                    >
+                        {tilesData.map((tile, key) => (
+                            <GridTile
+                                key={key}
+                                title={tile.title}
+                                onTouchTap={tile.click}
+                                className={tile.class?tile.class:''}
+                                actionIcon={tile.icon}
+                                actionPosition="left" titlePosition="bottom"
+                                titleBackground={
+                                    tile.titleBG ?
+                                        tile.titleBG : 'rgba(0,0,0,0.6)'
+                                }
+                                children={this.getContent(tile)}
+                                cols={tile.cols} rows={tile.rows? tile.rows:1}
+                                style={this.tileStyle(tile)}
                             />
-                        </Dialog>
-                        : ''
-                }
-            </div>
+                        ))}
+                    </GridList>
+                    {
+                        this.state.clickFeed ?
+                            <Dialog
+                                title={this.state.clickFeed.title}
+                                actions={actions}
+                                modal={false}
+                                open={this.state.dialogOpen}
+                                titleStyle={{
+                                    lineHeight: '1.2',
+                                    maxHeight: '3.6em',
+                                    padding: '0',
+                                    margin: '0 24px 20px 24px !important',
+                                    position: 'relative',
+                                    top: '24px',
+                                    overflowX: 'auto',
+                                    wordBreak: 'break-all'
+                                }}
+                                onRequestClose={this.closeFeed.bind(this)}
+                            >
+                                <h5>
+                                    {this.state.clickFeed.date_created
+                                        .toLocaleString()}
+                                </h5>
+                                <textArea
+                                    value={this.state.clickFeed.content}
+                                    style={{
+                                        width: '100%',
+                                        height: '200px',
+                                        maxHeight: '200px',
+                                        border: 'none',
+                                        fontFamily: 'Roboto, sans-serif',
+                                        lineHeight: '1.6'
+                                    }}
+                                    readOnly={true}
+                                />
+                            </Dialog>
+                            : ''
+                    }
+                </div>
+            </MuiThemeProvider>
         );
     }
 }
-
+Dashboard.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired
+};
 Dashboard.propTypes = {
     _userData: PropTypes.array.isRequired,
     _problem: PropTypes.array.isRequired,

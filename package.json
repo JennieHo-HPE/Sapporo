@@ -11,7 +11,7 @@
     "brace": "0.8.0",
     "dockerode": "^2.2.10",
     "fibers": "^1.0.10",
-    "material-ui": "0.15.0-alpha.2",
+    "material-ui": "^0.15.4",
     "meteor-node-stubs": "~0.2.0",
     "nuka-carousel": "^1.2.1",
     "react": "0.14.8",
