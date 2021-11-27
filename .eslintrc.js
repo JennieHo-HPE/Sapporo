@@ -27,6 +27,7 @@ module.exports = {
             "error",
             "single"
         ],
+        "no-console": 0,
         "semi": [
             "error",
             "always"
