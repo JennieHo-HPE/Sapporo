@@ -274,9 +274,17 @@ class ProblemEditor extends Component {
         }
         return this.props.data.images.map((item, key) => (
             <div key={key}>
-                <span style={{textAlign:'center', width:'100%'}}>
+                <div
+                    style={{
+                        width:'100%',
+                        textAlign:'center',
+                        fontSize: '.875em',
+                        fontStyle: 'italic',
+                        margin: '.5em 0'
+                    }}
+                >
                     {item.title}
-                </span>
+                </div>
                 <img
                     src={item.content}
                     style={{width: '100%', opacity: '0.9'}}
@@ -347,24 +355,25 @@ class ProblemEditor extends Component {
                             zDepth={1}
                         >
                             <div style={textDiv}>
-                                <TextField
-                                    floatingLabelText="Title"
-                                    type="text"
-                                    style={{width: '70%'}}
-                                    value={this.props.data.title[langIso]}
-                                />
                                 <SelectField
                                     value={this.state.languageOverride}
                                     onChange={this.updateDisplayLang.bind(this)}
-                                    floatingLabelText="Language"
-                                    style={{width: '20%'}}
+                                    floatingLabelText="Display Language"
                                 >
                                     {this.renderDisplayLangOptions()}
                                 </SelectField>
+                            </div>
+                            <div style={textDiv}>
+                                <TextField
+                                    floatingLabelText="Title"
+                                    type="text"
+                                    style={{width: '70%', marginRight: '1em'}}
+                                    value={this.props.data.title[langIso]}
+                                />
                                 <TextField
                                     floatingLabelText="Score"
                                     type="text"
-                                    style={{width: '5%'}}
+                                    style={{width: '10%'}}
                                     value={this.props.data.score}
                                 />
                             </div>
@@ -384,6 +393,8 @@ class ProblemEditor extends Component {
                                     type="text"
                                     multiLine={true}
                                     rows={2}
+                                    rowsMax={5}
+                                    className="code-entry"
                                     style={{width: '100%'}}
                                     value={
                                         this
@@ -399,6 +410,8 @@ class ProblemEditor extends Component {
                                     type="text"
                                     multiLine={true}
                                     rows={2}
+                                    rowsMax={5}
+                                    className="code-entry"
                                     style={{width:'100%'}}
                                     value={
                                         this.props.data.exampleOutput[langIso]
@@ -416,7 +429,13 @@ class ProblemEditor extends Component {
                                     : ''
                             }
                         </Paper>
-                        <div style={{width: '49.5%', float:'right'}}>
+                        <div
+                            style={{
+                                width: '49.5%',
+                                float:'right',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
                             <div>
                                 <div
                                     style={{
@@ -427,7 +446,7 @@ class ProblemEditor extends Component {
                                     <SelectField
                                         value={this.state.language}
                                         onChange={this.updateLang.bind(this)}
-                                        floatingLabelText="Language"
+                                        floatingLabelText="Programming Language"
                                     >
                                         {this.renderLangOptions()}
                                     </SelectField>
@@ -437,7 +456,10 @@ class ProblemEditor extends Component {
                                         <div
                                             style={{
                                                 display:'inline-block',
-                                                float:'right'
+                                                width: '50%',
+                                                textAlign: 'right',
+                                                marginTop: '1em',
+                                                whiteSpace: 'nowrap'
                                             }}
                                         >
                                             <RaisedButton
@@ -472,9 +494,11 @@ class ProblemEditor extends Component {
                                         width='100%'
                                         name="UNIQUE_ID_OF_DIV"
                                         editorProps={editorOption}
-                                        height="700px"
+                                        height="75vh"
                                     /> :
-                                    <span>Choose a language to start</span>
+                                    <span>
+                                        Choose a programming language to start
+                                    </span>
                             }
                         </div>
                     </div>

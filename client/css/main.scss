@@ -17,3 +17,8 @@ html {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.code-entry textarea {
+    font-family: "Roboto Mono", Consolas, Monaco, monospace !important;
+    font-size: .875em !important;
+}
