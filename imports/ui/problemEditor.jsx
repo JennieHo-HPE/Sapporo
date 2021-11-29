@@ -280,7 +280,8 @@ class ProblemEditor extends Component {
                         textAlign:'center',
                         fontSize: '.875em',
                         fontStyle: 'italic',
-                        margin: '.5em 0'
+                        margin: '.5em 0',
+                        color: '#7a7a7a'
                     }}
                 >
                     {item.title}
@@ -356,65 +357,116 @@ class ProblemEditor extends Component {
                         >
                             <div style={textDiv}>
                                 <SelectField
-                                    value={this.state.languageOverride}
+                                    //value={this.state.languageOverride}
+                                    value={langIso}
                                     onChange={this.updateDisplayLang.bind(this)}
                                     floatingLabelText="Display Language"
                                 >
                                     {this.renderDisplayLangOptions()}
                                 </SelectField>
                             </div>
-                            <div style={textDiv}>
-                                <TextField
+                            <div
+                                style={{
+                                    ...textDiv,
+                                    marginTop: '1em',
+                                    display: 'flex'
+                                }
+                            }>
+                                {/* <TextField
                                     floatingLabelText="Title"
                                     type="text"
+                                    underlineShow={false}
                                     style={{width: '70%', marginRight: '1em'}}
+                                    inputStyle={{fontSize: '1.375em', fontWeight: 'bold'}}
                                     value={this.props.data.title[langIso]}
-                                />
+                                /> */}
+                                <div
+                                    style={{
+                                        width: 'calc(100% - 3.27272727273em)',
+                                        marginRight: '1em',
+                                        fontSize: '1.375em',
+                                        fontWeight: '600',
+                                        color: '#78909c'
+                                    }}
+                                >
+                                    {this.props.data.title[langIso]}
+                                </div>
                                 <TextField
                                     floatingLabelText="Score"
                                     type="text"
-                                    style={{width: '10%'}}
+                                    underlineShow={false}
+                                    style={{width: '4.5em', top: '-30px'}}
+                                    floatingLabelFocusStyle={{
+                                        fontSize: '1.25em'
+                                    }}
+                                    inputStyle={{
+                                        fontSize: '2em',
+                                        fontWeight: '600',
+                                        color: '#26a69a'
+                                    }}
                                     value={this.props.data.score}
                                 />
                             </div>
                             <div style={textDiv}>
-                                <TextField
+                                {/* <TextField
                                     floatingLabelText="Description"
                                     type="text"
+                                    underlineShow={false}
                                     style={{width: '100%'}}
                                     multiLine={true}
                                     rows={2}
+                                    rowsMax={10}
                                     value={this.props.data.description[langIso]}
-                                />
+                                /> */}
+                                <div
+                                    style={{
+                                        whiteSpace: 'pre-wrap',
+                                        width: '100%',
+                                        lineHeight: '1.5'
+                                    }}
+                                >
+                                    {this.props.data.description[langIso]}
+                                </div>
                             </div>
                             <div style={textDiv}>
                                 <TextField
                                     floatingLabelText="Input Example"
+                                    floatingLabelFixed={true}
                                     type="text"
                                     multiLine={true}
-                                    rows={2}
-                                    rowsMax={5}
+                                    rows={1}
+                                    rowsMax={10}
+                                    underlineShow={false}
                                     className="code-entry"
                                     style={{width: '100%'}}
                                     value={
-                                        this
-                                        .props
-                                        .data
-                                        .exampleInput[langIso]
+                                        this.props.data.exampleInput[langIso] ?
+                                            this
+                                            .props
+                                            .data
+                                            .exampleInput[langIso]
+                                            : ''
                                     }
                                 />
                             </div>
                             <div style={textDiv}>
                                 <TextField
                                     floatingLabelText="Output Example"
+                                    floatingLabelFixed={true}
                                     type="text"
                                     multiLine={true}
-                                    rows={2}
-                                    rowsMax={5}
+                                    rows={1}
+                                    rowsMax={10}
+                                    underlineShow={false}
                                     className="code-entry"
                                     style={{width:'100%'}}
                                     value={
-                                        this.props.data.exampleOutput[langIso]
+                                        this.props.data.exampleOutput[langIso] ?
+                                            this
+                                            .props
+                                            .data
+                                            .exampleOutput[langIso]
+                                            : ''
                                     }
                                 />
                             </div>
