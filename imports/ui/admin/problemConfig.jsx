@@ -19,7 +19,6 @@ import ProblemIcon from 'material-ui/svg-icons/editor/insert-comment';
 import LanguageIcon from 'material-ui/svg-icons/action/language';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
-const workaroundStyle = {marginTop: '30px', borderTop: '1px solid #DDD'};
 const addStyle = {
     textAlign: 'center',
     marginTop: '20px'
@@ -37,7 +36,14 @@ const titleStyle = {
     width: '400px'
 };
 const inlineTestfield = {
-    width: '50%'
+    width: '49%',
+    marginRight: '1%',
+    verticalAlign: 'top'
+};
+const inlineTestfield2 = {
+    width: 'calc(36%)',
+    marginRight: '1%',
+    verticalAlign: 'top'
 };
 const initState = {
     addScore : 0,
@@ -263,22 +269,21 @@ class ProblemConfig extends Component {
             return;
         }
         return this.state.selectProblem.verfication.map((item, key) => (
-            <div
-                style={{marginTop:'20px', borderBottom: '1px solid #DDD'}}
-                key={key}
-            >
+            <div key={key}>
                 <TextField
                     type="text"
                     floatingLabelText="Input"
                     value={item.input}
                     name={key+'input'}
                     multiLine={true}
-                    underlineShow={false}
+                    underlineShow={true}
+                    className="code-entry"
+                    style={inlineTestfield2}
                     onChange={
                         this.updateVerificationCase.bind(this, key, 'input')
                     }
                     rows={1}
-                    rowsMax={1}
+                    rowsMax={5}
                 />
                 <TextField
                     type="text"
@@ -286,16 +291,19 @@ class ProblemConfig extends Component {
                     value={item.output}
                     name={key+'output'}
                     multiLine={true}
-                    underlineShow={false}
+                    underlineShow={true}
+                    className="code-entry"
+                    style={inlineTestfield2}
                     onChange={
                         this.updateVerificationCase.bind(this, key, 'output')
                     }
                     rows={1}
-                    rowsMax={1}
+                    rowsMax={5}
                 />
                 <RaisedButton
                     label="Delete"
                     secondary={true}
+                    style={{verticalAlign: 'top', marginTop: '1em'}}
                     onTouchTap={this.deleteVerificationCase.bind(this, key)}
                 />
             </div>
@@ -401,6 +409,9 @@ class ProblemConfig extends Component {
                             value={this.state.langIso}
                             onChange={this.updateLangIso.bind(this)}
                             floatingLabelText="Language"
+                            style={{
+                                fontWeight: '600'
+                            }}
                         >
                             {this.renderLangOptions()}
                         </SelectField>
@@ -448,10 +459,13 @@ class ProblemConfig extends Component {
                                 selected.description[this.state.langIso] || ''
                             }
                             name="description"
-                            rows={2}
-                            rowsMax={4}
-                            underlineShow={false}
-                            style={{width: '100%'}}
+                            rows={4}
+                            rowsMax={8}
+                            underlineShow={true}
+                            style={{
+                                width: '49%',
+                                minWidth: '25em'
+                            }}
                             onChange={
                                 this
                                 .updateSelectedWithLang
@@ -459,7 +473,7 @@ class ProblemConfig extends Component {
                             }
                         />
                     </div>
-                    <div style={workaroundStyle}>
+                    <div>
                         <TextField
                             type="text"
                             floatingLabelText="Input Example"
@@ -468,9 +482,10 @@ class ProblemConfig extends Component {
                                 selected.exampleInput[this.state.langIso] || ''
                             }
                             name="exampleInput"
-                            rows={2}
-                            rowsMax={2}
-                            underlineShow={false}
+                            rows={1}
+                            rowsMax={5}
+                            underlineShow={true}
+                            className="code-entry"
                             style={inlineTestfield}
                             onChange={
                                 this
@@ -486,9 +501,10 @@ class ProblemConfig extends Component {
                                 selected.exampleOutput[this.state.langIso] || ''
                             }
                             name="exampleOutput"
-                            rows={2}
-                            rowsMax={2}
-                            underlineShow={false}
+                            rows={1}
+                            rowsMax={5}
+                            underlineShow={true}
+                            className="code-entry"
                             style={inlineTestfield}
                             onChange={
                                 this
@@ -497,37 +513,48 @@ class ProblemConfig extends Component {
                             }
                         />
                     </div>
-                    <div style={workaroundStyle}>
+                    <div>
                         <TextField
                             type="text"
                             floatingLabelText="Test Input"
+                            className="code-entry"
                             style={inlineTestfield}
                             name="testInput"
                             multiLine={true}
-                            underlineShow={false}
+                            underlineShow={true}
                             value={selected.testInput}
                             onChange={
                                 this.updateSelected.bind(this, 'testInput')
                             }
                             rows={1}
-                            rowsMax={1}
+                            rowsMax={5}
                         />
                         <TextField
                             type="text"
                             floatingLabelText="Test Output"
+                            className="code-entry"
                             style={inlineTestfield}
                             name="testOutput"
                             multiLine={true}
-                            underlineShow={false}
+                            underlineShow={true}
                             value={selected.testOutput}
                             onChange={
                                 this.updateSelected.bind(this, 'testOutput')
                             }
                             rows={1}
-                            rowsMax={1}
+                            rowsMax={5}
                         />
                     </div>
-                    <div style={workaroundStyle}>
+                    <div
+                        style={{
+                            fontSize: '1rem',
+                            margin: '2em 0 1em 0',
+                            fontWeight: '600'
+                        }}
+                    >
+                        Verifications
+                    </div>
+                    <div>
                         <RaisedButton
                             label="Add another verification"
                             primary={true}
@@ -535,7 +562,16 @@ class ProblemConfig extends Component {
                         />
                         {this.renderVerification()}
                     </div>
-                    <div style={{marginTop:'10px'}}>
+                    <div
+                        style={{
+                            fontSize: '1rem',
+                            margin: '2em 0 1em 0',
+                            fontWeight: '600'
+                        }}
+                    >
+                        Upload image
+                    </div>
+                    <div>
                         <input
                             type="file"
                             onChange={this.addImage.bind(this)}
