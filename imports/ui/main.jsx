@@ -143,7 +143,7 @@ class Main extends Component {
                     />
                 );
             }
-            return ;
+            return;
         });
     }
 

@@ -283,7 +283,7 @@ class ProblemConfig extends Component {
                         this.updateVerificationCase.bind(this, key, 'input')
                     }
                     rows={1}
-                    rowsMax={5}
+                    rowsMax={7}
                 />
                 <TextField
                     type="text"
@@ -298,12 +298,12 @@ class ProblemConfig extends Component {
                         this.updateVerificationCase.bind(this, key, 'output')
                     }
                     rows={1}
-                    rowsMax={5}
+                    rowsMax={7}
                 />
                 <RaisedButton
                     label="Delete"
                     secondary={true}
-                    style={{verticalAlign: 'top', marginTop: '1em'}}
+                    style={{verticalAlign: 'middle', marginTop: '36px'}}
                     onTouchTap={this.deleteVerificationCase.bind(this, key)}
                 />
             </div>
@@ -315,18 +315,20 @@ class ProblemConfig extends Component {
             return;
         }
         return this.state.selectProblem.images.map((item, key) => (
-            <div key={key}>
+            <div key={key} style={{marginTop: '.5em'}}>
                 <img src={item.content} style={{height: '200px'}} />
                 <TextField
-                 type="text"
-                 placeholder="Title"
-                 name="title"
-                value={item.title}
-                onChange={this.updateImageTitle.bind(this, key)}
+                    type="text"
+                    placeholder="Title"
+                    name="title"
+                    value={item.title}
+                    style={{marginLeft: '.5em', verticalAlign: 'bottom'}}
+                    onChange={this.updateImageTitle.bind(this, key)}
                 />
                 <RaisedButton
                     label="Delete"
                     secondary={true}
+                    style={{marginLeft: '.5em', verticalAlign: 'bottom'}}
                     onTouchTap={this.deleteImage.bind(this, key)}
                 />
             </div>
@@ -460,7 +462,7 @@ class ProblemConfig extends Component {
                             }
                             name="description"
                             rows={4}
-                            rowsMax={8}
+                            rowsMax={10}
                             underlineShow={true}
                             style={{
                                 width: '49%',
@@ -483,7 +485,7 @@ class ProblemConfig extends Component {
                             }
                             name="exampleInput"
                             rows={1}
-                            rowsMax={5}
+                            rowsMax={7}
                             underlineShow={true}
                             className="code-entry"
                             style={inlineTestfield}
@@ -502,7 +504,7 @@ class ProblemConfig extends Component {
                             }
                             name="exampleOutput"
                             rows={1}
-                            rowsMax={5}
+                            rowsMax={7}
                             underlineShow={true}
                             className="code-entry"
                             style={inlineTestfield}
@@ -527,7 +529,7 @@ class ProblemConfig extends Component {
                                 this.updateSelected.bind(this, 'testInput')
                             }
                             rows={1}
-                            rowsMax={5}
+                            rowsMax={7}
                         />
                         <TextField
                             type="text"
@@ -542,7 +544,7 @@ class ProblemConfig extends Component {
                                 this.updateSelected.bind(this, 'testOutput')
                             }
                             rows={1}
-                            rowsMax={5}
+                            rowsMax={7}
                         />
                     </div>
                     <div
