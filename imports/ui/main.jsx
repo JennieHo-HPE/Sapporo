@@ -295,7 +295,8 @@ class Main extends Component {
             <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
                 <div>
                     <AppBar
-                        style={{backgroundColor: '#0097a7'}}
+                        //style={{backgroundColor: '#0097a7'}}
+                        style={{backgroundColor: '#212121'}}
                         title={
                             this.props._sapporo ?
                                 this.props._sapporo.title : ''
