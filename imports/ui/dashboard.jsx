@@ -143,7 +143,7 @@ class Dashboard extends Component {
                                 textDecoration: 'none !important'
                             }}
                             target="_blank"
-                            href="https://www.hpcodewars.com.tw/privacy_en"
+                            href="https://www.hpcodewars.com.tw/privacy-en"
                         >
                             Privacy
                         </a>
@@ -154,7 +154,7 @@ class Dashboard extends Component {
                                 textDecoration: 'none !important'
                             }}
                             target="_blank"
-                            href="https://www.hpcodewars.com.tw/privacy_zh"
+                            href="https://www.hpcodewars.com.tw/privacy-zh"
                         >
                             隱私權
                         </a>
@@ -165,7 +165,7 @@ class Dashboard extends Component {
                                 textDecoration: 'none !important'
                             }}
                             target="_blank"
-                            href="https://www.hpcodewars.com.tw/terms_en"
+                            href="https://www.hpcodewars.com.tw/terms-of-use-en"
                         >
                             Terms of Use
                         </a>
@@ -176,7 +176,7 @@ class Dashboard extends Component {
                                 textDecoration: 'none !important'
                             }}
                             target="_blank"
-                            href="https://www.hpcodewars.com.tw/terms_zh"
+                            href="https://www.hpcodewars.com.tw/terms-of-use-zh"
                         >
                             使用條款
                         </a>
