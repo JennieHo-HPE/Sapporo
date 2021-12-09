@@ -348,16 +348,20 @@ class ProblemEditor extends Component {
                         style={{
                             display: 'inline-block',
                             width: '100%',
-                            padding: '10px 0'
+                            padding: '10px 0 0 0'
                         }}
                     >
                         <Paper
-                            style={{width: '49.5%', float: 'left'}}
+                            style={{
+                                float: 'left',
+                                width: '49.5%',
+                                maxHeight: 'calc(100vh - 94px)',
+                                overflow: 'auto'
+                            }}
                             zDepth={1}
                         >
                             <div style={textDiv}>
                                 <SelectField
-                                    //value={this.state.languageOverride}
                                     value={langIso}
                                     onChange={this.updateDisplayLang.bind(this)}
                                     floatingLabelText="Display Language"
@@ -372,14 +376,6 @@ class ProblemEditor extends Component {
                                     display: 'flex'
                                 }
                             }>
-                                {/* <TextField
-                                    floatingLabelText="Title"
-                                    type="text"
-                                    underlineShow={false}
-                                    style={{width: '70%', marginRight: '1em'}}
-                                    inputStyle={{fontSize: '1.375em', fontWeight: 'bold'}}
-                                    value={this.props.data.title[langIso]}
-                                /> */}
                                 <div
                                     style={{
                                         width: 'calc(100% - 3.27272727273em)',
@@ -408,16 +404,6 @@ class ProblemEditor extends Component {
                                 />
                             </div>
                             <div style={textDiv}>
-                                {/* <TextField
-                                    floatingLabelText="Description"
-                                    type="text"
-                                    underlineShow={false}
-                                    style={{width: '100%'}}
-                                    multiLine={true}
-                                    rows={2}
-                                    rowsMax={10}
-                                    value={this.props.data.description[langIso]}
-                                /> */}
                                 <div
                                     style={{
                                         whiteSpace: 'pre-wrap',
@@ -429,46 +415,40 @@ class ProblemEditor extends Component {
                                 </div>
                             </div>
                             <div style={textDiv}>
-                                <TextField
-                                    floatingLabelText="Input Example"
-                                    floatingLabelFixed={true}
-                                    type="text"
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={10}
-                                    underlineShow={false}
-                                    className="code-entry"
-                                    style={{width: '100%'}}
-                                    value={
-                                        this.props.data.exampleInput[langIso] ?
-                                            this
-                                            .props
-                                            .data
-                                            .exampleInput[langIso]
-                                            : ''
-                                    }
-                                />
-                            </div>
-                            <div style={textDiv}>
-                                <TextField
-                                    floatingLabelText="Output Example"
-                                    floatingLabelFixed={true}
-                                    type="text"
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={10}
-                                    underlineShow={false}
-                                    className="code-entry"
-                                    style={{width:'100%'}}
-                                    value={
-                                        this.props.data.exampleOutput[langIso] ?
-                                            this
-                                            .props
-                                            .data
-                                            .exampleOutput[langIso]
-                                            : ''
-                                    }
-                                />
+                                <dl className="in-out-examples">
+                                    <dt>Input Example</dt>
+                                    <dd>
+                                        <pre className="code-entry">
+                                            <code>{
+                                                this
+                                                .props
+                                                .data
+                                                .exampleInput[langIso] ?
+                                                    this
+                                                    .props
+                                                    .data
+                                                    .exampleInput[langIso]
+                                                    : ''
+                                            }</code>
+                                        </pre>
+                                    </dd>
+                                    <dt>Output Example</dt>
+                                    <dd>
+                                        <pre className="code-entry">
+                                            <samp>{
+                                                this
+                                                .props
+                                                .data
+                                                .exampleOutput[langIso] ?
+                                                    this
+                                                    .props
+                                                    .data
+                                                    .exampleOutput[langIso]
+                                                    : ''
+                                            }</samp>
+                                        </pre>
+                                    </dd>
+                                </dl>
                             </div>
                             {
                                 (this.props.data.images.length > 0) ?
@@ -546,7 +526,7 @@ class ProblemEditor extends Component {
                                         width='100%'
                                         name="UNIQUE_ID_OF_DIV"
                                         editorProps={editorOption}
-                                        height="75vh"
+                                        height="calc(100vh - 166px)"
                                     /> :
                                     <span>
                                         Choose a programming language to start
