@@ -38,16 +38,35 @@ class Login extends Component {
             username: '',
             password: '',
             stafflogin: false,
-            loginErrMsg: ''
+            loginErrMsg: '',
+            // indicating if both username & password were provided in the login
+            // form (not 'empty', including 'all whitespaces')
+            loginInfoGiven: false
         };
     }
 
+    onLoginEntryKeyPress(event) {
+        // Allows to submit login entries by hitting the enter key...
+        if (event.key === 'Enter' && this.state.loginInfoGiven)
+            this.loginStaff();
+    }
+
     updateUsername(event) {
-        this.setState({username: event.target.value});
+        const username = event.target.value;
+        this.setState({
+            loginErrMsg: '', // clear err msg on re-entry
+            username: username,
+            loginInfoGiven: username.trim() && this.state.password.trim()
+        });
     }
 
     updatePassword(event) {
-        this.setState({password: event.target.value});
+        const password = event.target.value;
+        this.setState({
+            loginErrMsg: '', // clear err msg on re-entry
+            password: password,
+            loginInfoGiven: this.state.username.trim() && password.trim()
+        });
     }
 
     checkUser (callback) {
@@ -181,13 +200,24 @@ class Login extends Component {
                             <TextField
                                 floatingLabelText="User Name"
                                 onChange={this.updateUsername.bind(this)}
-                                style={{width:'50%'}}
+                                style={{
+                                    width: 'calc(50% - .5rem)'
+                                }}
+                                onKeyPress={
+                                    this.onLoginEntryKeyPress.bind(this)
+                                }
                             />
                             <TextField
                                 type="password"
                                 floatingLabelText="Password"
                                 onChange={this.updatePassword.bind(this)}
-                                style={{width:'50%'}}
+                                style={{
+                                    width: 'calc(50% - .5rem)',
+                                    marginLeft: '1rem'
+                                }}
+                                onKeyPress={
+                                    this.onLoginEntryKeyPress.bind(this)
+                                }
                             />
                         </div>
                         <div
@@ -199,26 +229,35 @@ class Login extends Component {
                         >
                             {this.state.loginErrMsg}
                         </div>
-                        <div style={{textAlign:'center'}}>
+                        <div
+                            style={{
+                                textAlign:'center',
+                                marginTop: '1.25rem'
+                            }}
+                        >
                             <FlatButton
                                 label="GO"
                                 primary={true}
+                                // disable button when either of the username &
+                                // password is empty
+                                disabled={!this.state.loginInfoGiven}
                                 onTouchTap={this.loginStaff.bind(this)}
-                                style={{margin:'20px'}}
                             />
                             {
-                                this.props._sapporo ?
-                                    (
-                                        this.props._sapporo.createAccount ?
-                                            <FlatButton
-                                                label="Create"
-                                                secondary={true}
-                                                onTouchTap={
-                                                    this.createStaff.bind(this)
-                                                }
-                                            /> : ''
-                                    )
-                                : ''
+                                this.props._sapporo
+                                && this.props._sapporo.createAccount
+                                && (
+                                    <FlatButton
+                                        label="Create"
+                                        secondary={true}
+                                        // disable button when either of the
+                                        // username & password is empty
+                                        disabled={!this.state.loginInfoGiven}
+                                        onTouchTap={
+                                            this.createStaff.bind(this)
+                                        }
+                                    />
+                                )
                             }
                         </div>
                     </Dialog>
