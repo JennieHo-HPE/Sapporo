@@ -18,10 +18,36 @@ html {
     text-overflow: ellipsis;
 }
 
+dl.in-out-examples dt {
+    font-size: .75rem;
+    margin: 2em 0 0;
+    line-height: 1.375em;
+    color: rgba(0,0,0,.5);
+}
+dl.in-out-examples dd {
+    margin: 0;
+    padding: 0;
+}
+dl.in-out-examples dd pre {
+    margin: 0;
+}
+
+pre.code-entry,
 .code-entry textarea {
-    font-family: "Roboto Mono", Consolas, Monaco, monospace !important;
-    font-size: .875em !important;
-    line-height: 1.71428571429 !important;
-    padding: 0 6px !important;
     background-color: #eceff1 !important;
+}
+.code-entry textarea {
+    padding: 0 .4286em !important;
+}
+pre.code-entry {
+    padding: .5em;
+    overflow: auto;
+}
+.code-entry code,
+.code-entry samp,
+.code-entry textarea {
+    font-family: Monaco, Menlo, "Ubuntu Mono", "Roboto Mono", Consolas,
+        source-code-pro, monospace !important;
+    font-size: .875em !important;
+    line-height: 1.7143 !important;
 }
