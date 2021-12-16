@@ -34,9 +34,12 @@ class Rank extends Component {
             );
         }
         let defaultLang = this.props._language[0].iso;
-        this.sortPropsArray('_problem', (item) => {
-            return this.problemSolvedCounting(item);
-        });
+        this.sortPropsArray('_userData', [
+            {
+                sortDir: -1,
+                valFunc: (item) => this.problemSolvedCounting(item)
+            }
+        ]);
         return this.props._problem.map((item, key) => {
             let solvedCount = this.problemSolvedCounting(item);
             return (
@@ -57,19 +60,38 @@ class Rank extends Component {
         });
     }
 
-    sortPropsArray (arrayName, compare) {
-        let array = this.props[arrayName];
-        array.sort((a, b) => {
-            let _a = compare(a);
-            let _b = compare(b);
-            if (_a > _b) {
-                return -1;
-            } else if (_a < _b) {
-                return 1;
-            } else {
-                return 0;
-            }
-        });
+    /**
+     * @callback valCallback
+     * @param {*} item
+     */
+    /**
+     * This is used to sort the array-typed prop of `this.props`.
+     *
+     * @param {string} arrayName the prop name of the `this.props' that is an
+     * array
+     * @param {{sortDir: number, valFunc: valCallback}} compareConds Provides a
+     * list of "compare conditions" as objects with field `sortDir' of number
+     * type indicating sorting direction (1: asc, -1: desc), and `valFunc',
+     * which is the callback for retrieving the desired value from the item of a
+     * props array used in the sorting comparisions. Think of this as an ordered
+     * list of sorting criteria.
+     */
+    sortPropsArray (arrayName, compareConds) {
+        this.props[arrayName].sort(
+            (a, b) => compareConds.reduce(
+                (prevResult, curCond) => {
+                    if (prevResult != 0)
+                        return prevResult;
+
+                    const aVal = curCond.valFunc(a);
+                    const bVal = curCond.valFunc(b);
+                    return aVal < bVal ?
+                        -1 * curCond.sortDir
+                        : (aVal > bVal ? 1 * curCond.sortDir : 0);
+                },
+                0
+            )
+        );
     }
 
     userScoreTextFormat (user, score) {
@@ -79,9 +101,16 @@ class Rank extends Component {
 
     renderAllUser () {
         if (!this.props._userData || this.props._userData.length === 0) return;
-        this.sortPropsArray('_userData', (item) => {
-            return getUserTotalScore(item, this.props._problem);
-        });
+        this.sortPropsArray('_userData', [
+            {
+                sortDir: -1,
+                valFunc: item => getUserTotalScore(item, this.props._problem)
+            },
+            {
+                sortDir: 1,
+                valFunc: item => getFinishTime(item)
+            }
+        ]);
         return this.props._userData.map((item, key) => {
             let userTotalScore = getUserTotalScore(item, this.props._problem);
             return (
