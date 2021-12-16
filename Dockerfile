@@ -10,7 +10,7 @@ RUN curl -sk https://install.meteor.com/?release=1.4.2.7 | sh
 RUN mkdir /source
 WORKDIR /source
 
-# Copy over `package.json' and install frontend deppendencies...
+# Copy over `package.json' and install NPM deppendencies...
 COPY package.json .
 RUN meteor npm install && \
     meteor npm cache clean --force
