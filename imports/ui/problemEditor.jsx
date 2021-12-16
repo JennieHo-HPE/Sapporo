@@ -331,18 +331,21 @@ class ProblemEditor extends Component {
             tmp.exampleOutput[langIso] = this.props.data.exampleOutput;
             Object.assign(this.props.data, tmp);
         }
+
+        // indicaates if the current user has already passed the current problem
+        let alreadyPass = this.alreadyPass();
+
         return (
             <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
                 <div>
                     {SetInfoErrDialog(this)}
                     {
-                        this.alreadyPass() ?
+                        alreadyPass &&
                             <Paper style={{width: '100%', textAlign: 'center'}}>
                                 <h3 style={{color: 'green'}}>
                                     You've Solved This Problem!
                                 </h3>
                             </Paper>
-                            : ''
                     }
                     <div
                         style={{
@@ -355,7 +358,9 @@ class ProblemEditor extends Component {
                             style={{
                                 float: 'left',
                                 width: '49.5%',
-                                maxHeight: 'calc(100vh - 94px)',
+                                maxHeight: `calc(100vh - ${
+                                    alreadyPass ? '153px' : '94px'
+                                })`,
                                 overflow: 'auto'
                             }}
                             zDepth={1}
@@ -484,7 +489,7 @@ class ProblemEditor extends Component {
                                     </SelectField>
                                 </div>
                                 {
-                                    this.alreadyPass() ? '' :
+                                    !alreadyPass &&
                                         <div
                                             style={{
                                                 display:'inline-block',
@@ -526,7 +531,9 @@ class ProblemEditor extends Component {
                                         width='100%'
                                         name="UNIQUE_ID_OF_DIV"
                                         editorProps={editorOption}
-                                        height="calc(100vh - 166px)"
+                                        height={`calc(100vh - ${
+                                            alreadyPass ? '225px' : '166px'
+                                        })`}
                                     /> :
                                     <span>
                                         Choose a programming language to start
