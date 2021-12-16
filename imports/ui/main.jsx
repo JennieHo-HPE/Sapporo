@@ -82,15 +82,21 @@ class Main extends Component {
 
     renderProblems () {
         let array = this.props._problem;
+        // sort by problem title, then problem score...
         array.sort((a, b) => {
-            let _a = parseInt(a.score);
-            let _b = parseInt(b.score);
-            if (_a < _b) {
+            // desired to perform case insensitive comparison for titles
+            const aTitle = String(a.title['en-US']).toLowerCase();
+            const bTitle = String(b.title['en-US']).toLowerCase();
+
+            const aScore = parseInt(a.score);
+            const bScore = parseInt(b.score);
+
+            if (aTitle < bTitle) {
                 return -1;
-            } else if (_a > _b) {
+            } else if (aTitle > bTitle) {
                 return 1;
             } else {
-                return 0;
+                return aScore - bScore;
             }
         });
         return array.map((problem, key) => {
