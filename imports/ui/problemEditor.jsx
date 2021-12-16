@@ -83,7 +83,6 @@ class ProblemEditor extends Component {
     }
 
     renderDisplayLangOptions () {
-        console.log(this.props._language);
         if (!this.props._language) return;
         return this.props._language.map((lang, key) => (
             <MenuItem

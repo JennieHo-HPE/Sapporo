@@ -5,7 +5,6 @@ Meteor.methods({
         let target = ServiceConfiguration.configurations.findOne({
             service: serviceName
         });
-        //console.log(target);
         return (target? true:false);
     },
     resetFacebookLogin: function () {

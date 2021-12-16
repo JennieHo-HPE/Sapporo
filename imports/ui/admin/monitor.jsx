@@ -63,7 +63,6 @@ class Monitor extends Component {
             obj.minutes = key;
             result.push(obj);
         }
-        //console.log(result);
         return result;
     }
 

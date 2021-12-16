@@ -188,7 +188,6 @@ Meteor.startup(() => {
             return result;
         },
         'docker.submitCode'(data, isTest){
-            //console.log(data.code.length);
             if (!data.code || data.code.length > maximumInput) {
                 logRequest(logReason.error, 'Input too large');
                 throw new Meteor.Error(500, 'Input too large');
@@ -342,11 +341,9 @@ const getDockerInstance = function() {
 const reachMax = function (id) {
     let sapporoObj = (sapporo.findOne({sapporo:true}));
     if (concurrentCount.length > sapporoObj.maxExe) {
-        //console.log('reach MAX');
         return true;
     } else {
         concurrentCount.push(id);
-        //console.log(concurrentCount.length);
         return false;
     }
 };
@@ -354,7 +351,6 @@ const releaseConcurrent = function (id) {
     for (let key in concurrentCount) {
         if (concurrentCount[key] === id) {
             concurrentCount = concurrentCount.splice(key, 1);
-            //console.log('Removed: ' + id);
             break;
         }
     }

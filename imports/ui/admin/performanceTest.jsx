@@ -177,7 +177,6 @@ class PerformanceTest extends Component {
             for (var key in testCases) {
                 sentCount += 1;
                 this.setState({testCaseSent: sentCount});
-                //console.log('Sent key:' + testCases[key].langType);
                 Meteor.call('docker.performanceTest', {
                     code: testCases[key].testScript,
                     input: testCases[key].testInput,

@@ -223,7 +223,6 @@ class Survey extends Component {
                 }
             }
 
-            //console.log(this.state.survey);
             Meteor.call('survey.submit', this.state.survey, this.state.editID, (error)=>{
                 if (error) {
                     this.showErr('[" + error.error + "] ' + error.reason);
