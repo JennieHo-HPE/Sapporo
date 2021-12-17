@@ -34,7 +34,7 @@ class Rank extends Component {
             );
         }
         let defaultLang = this.props._language[0].iso;
-        this.sortPropsArray('_userData', [
+        this.sortPropsArray('_problem', [
             {
                 sortDir: -1,
                 valFunc: (item) => this.problemSolvedCounting(item)
